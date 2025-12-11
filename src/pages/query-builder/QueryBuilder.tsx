@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import ReactFlow, { 
   Background, 
   Controls, 
+  MiniMap,
   useNodesState, 
   useEdgesState, 
   ReactFlowProvider,
@@ -11,7 +12,7 @@ import 'reactflow/dist/style.css';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import Editor from '@monaco-editor/react';
 import { useDebounce } from 'use-debounce';
-import { Database, Columns, Sparkles, RotateCcw, MousePointer2, Code2, Settings2, Layers } from 'lucide-react';
+import { Database, Columns, Sparkles, RotateCcw, MousePointer2, Code2, Settings2, Layers, Wand2, LayoutGrid } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,6 +29,8 @@ import ColumnContextMenu from './ColumnContextMenu';
 import QueryOptionsPanel from './QueryOptionsPanel';
 import SelectedColumnsPanel from './SelectedColumnsPanel';
 import SQLOutputPanel from './SQLOutputPanel';
+import CTEBuilderPanel from './CTEBuilderPanel';
+import { CTEDefinition, SubqueryDefinition } from '@/lib/query-engine';
 
 const DEFAULT_SCHEMA = `// 🏢 Employee Management System
 // Define tables with [icon: name, color: #hex]
@@ -89,6 +92,9 @@ function QueryBuilderContent() {
     joinType: 'INNER'
   });
   
+  const [ctes, setCTEs] = useState<CTEDefinition[]>([]);
+  const [subqueries, setSubqueries] = useState<SubqueryDefinition[]>([]);
+  
   const [generatedSQL, setGeneratedSQL] = useState("");
   const [contextMenu, setContextMenu] = useState<{ 
     x: number; 
@@ -118,13 +124,9 @@ function QueryBuilderContent() {
     );
   }, [nodes]);
 
-  // Parse and layout schema
-  useEffect(() => {
-    const { nodes: rawNodes, edges: rawEdges } = parseSchema(debouncedSchema);
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(rawNodes, rawEdges);
-    
-    // Inject query state into nodes for visual feedback
-    const mergedNodes = layoutedNodes.map(node => ({
+  // Merge query state into nodes
+  const mergeQueryStateIntoNodes = useCallback((rawNodes: any[]) => {
+    return rawNodes.map(node => ({
       ...node,
       data: {
         ...node.data,
@@ -150,10 +152,25 @@ function QueryBuilderContent() {
         })
       }
     }));
+  }, [queryState]);
 
+  // Parse and layout schema
+  useEffect(() => {
+    const { nodes: rawNodes, edges: rawEdges } = parseSchema(debouncedSchema);
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(rawNodes, rawEdges);
+    const mergedNodes = mergeQueryStateIntoNodes(layoutedNodes);
     setNodes(mergedNodes);
     setEdges(layoutedEdges);
-  }, [debouncedSchema, queryState, setNodes, setEdges]);
+  }, [debouncedSchema, queryState, setNodes, setEdges, mergeQueryStateIntoNodes]);
+
+  // Auto-layout handler
+  const handleAutoLayout = useCallback(() => {
+    const { nodes: rawNodes, edges: rawEdges } = parseSchema(schemaCode);
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(rawNodes, rawEdges);
+    const mergedNodes = mergeQueryStateIntoNodes(layoutedNodes);
+    setNodes(mergedNodes);
+    setEdges(layoutedEdges);
+  }, [schemaCode, mergeQueryStateIntoNodes, setNodes, setEdges]);
 
   // Get column type from nodes
   const getColumnType = useCallback((table: string, column: string): string => {
@@ -191,9 +208,14 @@ function QueryBuilderContent() {
 
   // Generate SQL whenever state changes
   useEffect(() => {
-    const sql = generateComplexQuery(queryState, schemaEdges, queryOptions);
+    const optionsWithCTEs = {
+      ...queryOptions,
+      ctes: ctes.length > 0 ? ctes : undefined,
+      subqueries: subqueries.length > 0 ? subqueries : undefined
+    };
+    const sql = generateComplexQuery(queryState, schemaEdges, optionsWithCTEs);
     setGeneratedSQL(sql);
-  }, [queryState, schemaEdges, queryOptions]);
+  }, [queryState, schemaEdges, queryOptions, ctes, subqueries]);
 
   // Context menu handlers
   const handleUpdateColumn = useCallback((updates: Partial<ColumnRef>) => {
@@ -325,6 +347,11 @@ function QueryBuilderContent() {
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 nodeTypes={nodeTypes}
+                defaultEdgeOptions={{
+                  type: 'smoothstep',
+                  animated: true,
+                  style: { strokeWidth: 2, stroke: '#71717a' },
+                }}
                 fitView
                 minZoom={0.1}
                 maxZoom={2}
@@ -348,6 +375,25 @@ function QueryBuilderContent() {
                     </div>
                   </div>
                 </Panel>
+                <Panel position="top-right" className="m-4!">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAutoLayout}
+                    className="gap-2 bg-card/90 backdrop-blur-sm border-border shadow-lg hover:bg-secondary"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    Auto Layout
+                  </Button>
+                </Panel>
+                <MiniMap
+                  nodeColor={(node) => node.data?.styles?.color || 'hsl(var(--primary))'}
+                  maskColor="hsl(var(--background) / 0.8)"
+                  className="bg-card/90! border border-border! rounded-xl! shadow-lg! overflow-hidden"
+                  style={{ width: 150, height: 100 }}
+                  pannable
+                  zoomable
+                />
               </ReactFlow>
 
               {/* Context Menu */}
@@ -399,16 +445,22 @@ function QueryBuilderContent() {
                     <Settings2 className="w-3.5 h-3.5" />
                     Options
                   </TabsTrigger>
+                  <TabsTrigger 
+                    value="advanced"
+                    className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary rounded-lg px-3 gap-1.5"
+                  >
+                    <Wand2 className="w-3.5 h-3.5" />
+                    Advanced
+                    {(ctes.length > 0 || subqueries.length > 0) && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-qb-output/20 text-qb-output">
+                        {ctes.length + subqueries.length}
+                      </span>
+                    )}
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="output" className="flex-1 m-0 overflow-hidden">
-                  <ScrollArea className="h-full">
-                    <div className="p-4">
-                      <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm font-mono">
-                        <code>{generatedSQL || '-- No query generated yet'}</code>
-                      </pre>
-                    </div>
-                  </ScrollArea>
+                  <SQLOutputPanel sql={generatedSQL} />
                 </TabsContent>
 
                 <TabsContent value="columns" className="flex-1 m-0 overflow-hidden">
@@ -425,6 +477,15 @@ function QueryBuilderContent() {
                   <QueryOptionsPanel
                     options={queryOptions}
                     onChange={setQueryOptions}
+                  />
+                </TabsContent>
+
+                <TabsContent value="advanced" className="flex-1 m-0 p-4 overflow-auto">
+                  <CTEBuilderPanel
+                    ctes={ctes}
+                    subqueries={subqueries}
+                    onCTEsChange={setCTEs}
+                    onSubqueriesChange={setSubqueries}
                   />
                 </TabsContent>
               </Tabs>

@@ -182,8 +182,13 @@ export const parseSchema = (text: string) => {
       targetHandle: direction === '>' ? targetCol : sourceCol,
       type: 'smoothstep',
       animated: true,
-      style: { stroke: 'hsl(var(--muted-foreground))', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: 'hsl(var(--muted-foreground))' },
+      style: { stroke: '#71717a', strokeWidth: 2 },
+      markerEnd: { 
+        type: MarkerType.ArrowClosed, 
+        color: '#71717a',
+        width: 20,
+        height: 20
+      },
     });
   });
 

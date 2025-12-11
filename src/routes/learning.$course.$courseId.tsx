@@ -12,8 +12,8 @@ import { useNavigate } from '@tanstack/react-router';
 
 
 // Direct imports for all SQL MDX files for SSR
-import * as sqlMod1_1 from '../course_content/sql/module_1/mod_1_1.mdx';
-import * as sqlMod1_2 from '../course_content/sql/module_1/mod_1_2.mdx';
+import sqlMod1_1 from '../course_content/sql/module_1/mod_1_1.mdx';
+import sqlMod1_2 from '../course_content/sql/module_1/mod_1_2.mdx';
 import sqlMod1_3 from '../course_content/sql/module_1/mod_1_3.mdx';
 import sqlMod1_4 from '../course_content/sql/module_1/mod_1_4.mdx';
 import sqlMod1_5 from '../course_content/sql/module_1/mod_1_5.mdx';
@@ -95,8 +95,8 @@ import BottomDock from '@/components/bottom-dock';
 import { PageHeader } from '@/components/article-header';
 
 const sqlMdxModules = {
-  'module_1/mod_1_1.mdx': sqlMod1_1.default,
-  'module_1/mod_1_2.mdx': sqlMod1_2.default,
+  'module_1/mod_1_1.mdx': sqlMod1_1,
+  'module_1/mod_1_2.mdx': sqlMod1_2,
   'module_1/mod_1_3.mdx': sqlMod1_3,
   'module_1/mod_1_4.mdx': sqlMod1_4,
   'module_1/mod_1_5.mdx': sqlMod1_5,
@@ -213,14 +213,7 @@ export default function RouteComponent() {
   };
 
   const mdxModule = currentLesson ? mdxModules[currentLesson.file as keyof typeof mdxModules] : null;
-  const MdxContent = mdxModule?.default || mdxModule;
-
-  // Debug: log what we're actually getting
-  if (typeof window !== 'undefined' && MdxContent) {
-    console.log('mdxModule:', mdxModule);
-    console.log('MdxContent type:', typeof MdxContent);
-    console.log('MdxContent:', MdxContent);
-  }
+  const MdxContent = mdxModule;
 
  return (
     <div className="flex h-screen overflow-hidden">

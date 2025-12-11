@@ -16,6 +16,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { ThemeProvider } from '@/components/ui/theme-provider'
 import { getThemeServerFn } from '@/lib/theme'
 import { MDXLayoutProvider } from '@/components/mdx-provider'
+import { Toaster } from '@/components/ui/sonner'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -64,6 +65,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ThemeProvider theme={theme}>
           <MDXLayoutProvider>
         {children}
+        <Toaster/>
           </MDXLayoutProvider>
         </ThemeProvider>
         <TanStackDevtools

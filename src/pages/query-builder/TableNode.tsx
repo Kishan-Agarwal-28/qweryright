@@ -1,12 +1,15 @@
-import React, { memo } from 'react';
+import React, { memo, useState, useMemo } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { 
   User, Layers, DollarSign, Star, Calendar, 
   BookOpen, CheckSquare, Database, Key, Filter, ArrowDownUp, Calculator,
-  Package, ShoppingCart, FileText, Settings, Users, Mail, Tag
+  Package, ShoppingCart, FileText, Settings, Users, Mail, Tag, Boxes,
+  Building2, CreditCard, MapPin, Phone, Clock, Briefcase, Award, Heart,
+  Search, X
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { ParsedColumn } from '@/lib/query-engine';
+import { Input } from '@/components/ui/input';
 
 const iconMap: Record<string, React.ElementType> = {
   user: User,
@@ -25,6 +28,15 @@ const iconMap: Record<string, React.ElementType> = {
   settings: Settings,
   mail: Mail,
   tag: Tag,
+  boxes: Boxes,
+  building: Building2,
+  'credit-card': CreditCard,
+  'map-pin': MapPin,
+  phone: Phone,
+  clock: Clock,
+  briefcase: Briefcase,
+  award: Award,
+  heart: Heart,
 };
 
 interface TableNodeData {
@@ -37,41 +49,104 @@ interface TableNodeData {
 }
 
 export default memo(function TableNode({ data }: NodeProps<TableNodeData>) {
+  const [searchQuery, setSearchQuery] = useState('');
   const Icon = iconMap[data.styles?.icon || 'database'] || Database;
-  const headerColor = data.styles?.color || '#3b82f6';
+  const headerColor = data.styles?.color || 'hsl(var(--primary))';
   
-  const handleAction = (e: React.MouseEvent, type: string, colName: string) => {
+  const handleAction = (e: React.MouseEvent, type: string, colName: string, colType?: string) => {
     e.stopPropagation();
     window.dispatchEvent(new CustomEvent('column-action', { 
-      detail: { type, table: data.label, column: colName, x: e.clientX, y: e.clientY } 
+      detail: { type, table: data.label, column: colName, columnType: colType, x: e.clientX, y: e.clientY } 
     }));
   };
 
+  const selectedCount = data.columns.filter(c => c.state?.selected).length;
+  const showSearch = data.columns.length > 8;
+
+  const filteredColumns = useMemo(() => {
+    if (!searchQuery.trim()) return data.columns;
+    const q = searchQuery.toLowerCase();
+    return data.columns.filter(col => 
+      col.name.toLowerCase().includes(q) || col.type.toLowerCase().includes(q)
+    );
+  }, [data.columns, searchQuery]);
+
   return (
-    <div className="min-w-[280px] bg-card rounded-lg border border-border shadow-lg overflow-hidden font-mono text-sm animate-fade-in">
+    <div className="min-w-[300px] bg-card rounded-xl border border-border shadow-2xl overflow-hidden font-mono text-sm animate-fade-in">
       {/* Header */}
       <div 
-        className="px-4 py-3 flex items-center gap-3 border-b border-border bg-secondary/30"
-        style={{ borderTop: `3px solid ${headerColor}` }}
+        className="px-4 py-3 flex items-center gap-3 border-b border-border"
+        style={{ 
+          background: `linear-gradient(135deg, ${headerColor}15 0%, transparent 100%)`,
+          borderTop: `3px solid ${headerColor}` 
+        }}
       >
         <div 
-          className="p-1.5 rounded-md bg-background/50 ring-1 ring-inset ring-border"
-          style={{ color: headerColor }}
+          className="p-2 rounded-lg ring-1 ring-inset ring-border/50"
+          style={{ 
+            background: `${headerColor}20`,
+            color: headerColor 
+          }}
         >
           <Icon className="w-4 h-4" />
         </div>
-        <span className="font-bold text-foreground tracking-tight">{data.label}</span>
-        <span className="ml-auto text-xs text-muted-foreground">
-          {data.columns.length} cols
-        </span>
+        <div className="flex-1">
+          <span className="font-bold text-foreground tracking-tight text-base">{data.label}</span>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="text-[10px] text-muted-foreground">
+              {data.columns.length} columns
+            </span>
+            {selectedCount > 0 && (
+              <span 
+                className="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+                style={{ 
+                  background: `${headerColor}20`,
+                  color: headerColor 
+                }}
+              >
+                {selectedCount} selected
+              </span>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Search Bar */}
+      {showSearch && (
+        <div className="px-3 py-2 border-b border-border bg-secondary/30">
+          <div className="relative">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search columns..."
+              className="h-7 pl-7 pr-7 text-xs bg-background border-border focus-visible:ring-1 focus-visible:ring-primary"
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+            />
+            {searchQuery && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setSearchQuery(''); }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+          {searchQuery && (
+            <div className="text-[10px] text-muted-foreground mt-1">
+              {filteredColumns.length} of {data.columns.length} columns
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Columns */}
       <div className="py-1 flex flex-col max-h-[400px] overflow-y-auto">
-        {data.columns.map((col: ParsedColumn) => {
+        {filteredColumns.map((col: ParsedColumn) => {
           const state = col.state || {} as NonNullable<ParsedColumn['state']>;
           const isSelected = state.selected ?? false;
-          const hasModifiers = state.aggregate || state.sort || state.filter || state.having;
+          const hasModifiers = state.aggregate || state.sort || state.filter || state.filterGroup || state.having || state.window;
 
           return (
             <div 
@@ -80,16 +155,16 @@ export default memo(function TableNode({ data }: NodeProps<TableNodeData>) {
                 "group relative flex items-center justify-between px-4 py-2.5 cursor-pointer transition-all duration-150",
                 isSelected 
                   ? "bg-primary/10 border-l-2 border-l-primary" 
-                  : "hover:bg-accent border-l-2 border-l-transparent"
+                  : "hover:bg-secondary/50 border-l-2 border-l-transparent"
               )}
-              onClick={(e) => handleAction(e, 'toggle', col.name)}
-              onContextMenu={(e) => { e.preventDefault(); handleAction(e, 'context', col.name); }}
+              onClick={(e) => handleAction(e, 'toggle', col.name, col.type)}
+              onContextMenu={(e) => { e.preventDefault(); handleAction(e, 'context', col.name, col.type); }}
             >
               <Handle 
                 type="target" 
                 position={Position.Left} 
                 id={col.name} 
-                className="!w-2 !h-2 !bg-muted-foreground !border-none opacity-0 group-hover:opacity-100 transition-opacity !-ml-[18px]" 
+                className="w-2.5! h-2.5! bg-primary! border-2! border-background! opacity-0 group-hover:opacity-100 transition-opacity -ml-5!" 
               />
 
               <div className="flex items-center gap-3 overflow-hidden flex-1 min-w-0">
@@ -98,7 +173,7 @@ export default memo(function TableNode({ data }: NodeProps<TableNodeData>) {
                   "w-4 h-4 shrink-0 rounded border-2 flex items-center justify-center transition-all duration-150",
                   isSelected 
                     ? "bg-primary border-primary" 
-                    : "border-muted-foreground/40 group-hover:border-muted-foreground"
+                    : "border-muted-foreground/30 group-hover:border-muted-foreground/60"
                 )}>
                   {isSelected && (
                     <svg className="w-2.5 h-2.5 text-primary-foreground" fill="currentColor" viewBox="0 0 12 12">
@@ -116,39 +191,44 @@ export default memo(function TableNode({ data }: NodeProps<TableNodeData>) {
                       {col.name}
                     </span>
                     {col.isPk && (
-                      <Key className="w-3 h-3 text-qb-join shrink-0" />
+                      <Key className="w-3.5 h-3.5 text-qb-join shrink-0" />
                     )}
                   </div>
                   
                   {/* State Badges */}
                   {hasModifiers && (
-                    <div className="flex items-center gap-1 mt-1 flex-wrap">
+                    <div className="flex items-center gap-1 mt-1.5 flex-wrap">
                       {state.aggregate && (
-                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-aggregate/20 text-qb-aggregate px-1.5 py-0.5 rounded font-medium">
+                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-aggregate/20 text-qb-aggregate px-1.5 py-0.5 rounded-md font-medium">
                           <Calculator className="w-2.5 h-2.5" />
                           {state.aggregate}
                         </span>
                       )}
+                      {state.window && (
+                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-window/20 text-qb-window px-1.5 py-0.5 rounded-md font-medium">
+                          {state.window.function}
+                        </span>
+                      )}
                       {state.sort && (
-                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-sort/20 text-qb-sort px-1.5 py-0.5 rounded font-medium">
+                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-sort/20 text-qb-sort px-1.5 py-0.5 rounded-md font-medium">
                           <ArrowDownUp className="w-2.5 h-2.5" />
                           {state.sort}
                         </span>
                       )}
-                      {state.filter && (
-                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-filter/20 text-qb-filter px-1.5 py-0.5 rounded font-medium">
+                      {(state.filter || state.filterGroup) && (
+                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-filter/20 text-qb-filter px-1.5 py-0.5 rounded-md font-medium">
                           <Filter className="w-2.5 h-2.5" />
                           WHERE
                         </span>
                       )}
                       {state.having && (
-                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-output/20 text-qb-output px-1.5 py-0.5 rounded font-medium">
+                        <span className="inline-flex items-center gap-0.5 text-[10px] bg-qb-output/20 text-qb-output px-1.5 py-0.5 rounded-md font-medium">
                           <Filter className="w-2.5 h-2.5" />
                           HAVING
                         </span>
                       )}
                       {state.alias && (
-                        <span className="inline-flex items-center text-[10px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium">
+                        <span className="inline-flex items-center text-[10px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-md font-medium">
                           AS {state.alias}
                         </span>
                       )}
@@ -157,7 +237,10 @@ export default memo(function TableNode({ data }: NodeProps<TableNodeData>) {
                 </div>
               </div>
 
-              <span className="text-[11px] text-muted-foreground font-medium shrink-0 ml-2 uppercase">
+              <span className={cn(
+                "text-[10px] font-medium shrink-0 ml-2 uppercase px-1.5 py-0.5 rounded",
+                "bg-secondary text-muted-foreground"
+              )}>
                 {col.type}
               </span>
               
@@ -165,7 +248,7 @@ export default memo(function TableNode({ data }: NodeProps<TableNodeData>) {
                 type="source" 
                 position={Position.Right} 
                 id={col.name} 
-                className="!w-2 !h-2 !bg-muted-foreground !border-none opacity-0 group-hover:opacity-100 transition-opacity !-mr-[18px]" 
+                className="w-2.5! h-2.5! bg-primary! border-2! border-background! opacity-0 group-hover:opacity-100 transition-opacity -mr-5!" 
               />
             </div>
           );

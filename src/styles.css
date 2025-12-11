@@ -250,3 +250,52 @@ code {
     background: transparent;
   }
 }
+
+/* React Flow Edge Styling */
+.react-flow__edge-path {
+  stroke: #71717a !important;
+  stroke-width: 2.5 !important;
+}
+
+.react-flow__edge.animated path {
+  stroke-dasharray: 5;
+  animation: dashdraw 0.5s linear infinite;
+}
+
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:focus .react-flow__edge-path,
+.react-flow__edge:focus-visible .react-flow__edge-path {
+  stroke: hsl(var(--primary)) !important;
+  stroke-width: 3 !important;
+}
+
+.react-flow__arrowhead polyline,
+.react-flow__arrowhead polygon {
+  fill: #71717a !important;
+  stroke: #71717a !important;
+}
+
+.react-flow__edge-textwrapper {
+  fill: #71717a !important;
+}
+
+.react-flow__handle {
+  width: 12px !important;
+  height: 12px !important;
+  background: #71717a !important;
+  border: 2px solid white !important;
+}
+
+.react-flow__handle-left {
+  left: -6px !important;
+}
+
+.react-flow__handle-right {
+  right: -6px !important;
+}
+
+@keyframes dashdraw {
+  from {
+    stroke-dashoffset: 10;
+  }
+}
