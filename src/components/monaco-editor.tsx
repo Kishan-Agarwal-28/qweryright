@@ -5,6 +5,7 @@ import { executeSQL, initializeDatabase } from '@/lib/pglite';
 import { Button } from '@/components/ui/button';
 import { Play, Loader2 } from 'lucide-react';
 import { sqlSuggestions } from '@/lib/sql-suggestions';
+import { useTheme } from '@/store/theme-store';
 
 function CodeEditor() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
@@ -12,6 +13,8 @@ function CodeEditor() {
   const [error, setError] = useState<string | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const theme = useTheme();
+  const editorTheme = theme === 'dark' ? 'vs-dark' : 'vs-light';
 
   // Initialize database on mount
   useEffect(() => {
@@ -176,7 +179,7 @@ function CodeEditor() {
           defaultLanguage="sql"
           language="sql"
           defaultValue="-- Welcome to SQL Practice! 📚\n-- Press Ctrl+Enter to execute any query\n-- Database: Online Bookstore\n\n-- Try these example queries:\n\n-- 1. Get all books with their authors\nSELECT b.title, a.name as author, b.price, b.publication_year\nFROM books b\nJOIN authors a ON b.author_id = a.author_id\nORDER BY b.title\nLIMIT 10;\n\n-- 2. Find top-rated books\n-- SELECT b.title, a.name as author, AVG(r.rating) as avg_rating, COUNT(r.review_id) as review_count\n-- FROM books b\n-- JOIN authors a ON b.author_id = a.author_id\n-- LEFT JOIN reviews r ON b.book_id = r.book_id\n-- GROUP BY b.book_id, b.title, a.name\n-- HAVING COUNT(r.review_id) > 0\n-- ORDER BY avg_rating DESC\n-- LIMIT 5;\n\n-- 3. Customer order history\n-- SELECT c.first_name, c.last_name, COUNT(o.order_id) as total_orders, SUM(o.total_amount) as total_spent\n-- FROM customers c\n-- LEFT JOIN orders o ON c.customer_id = o.customer_id\n-- GROUP BY c.customer_id, c.first_name, c.last_name\n-- ORDER BY total_spent DESC;\n\n-- Available tables: authors, books, categories, customers, orders, order_items, reviews"
-          theme="vs-dark"
+          theme={editorTheme}
           onMount={handleEditorDidMount}
           options={{
             selectOnLineNumbers: true,

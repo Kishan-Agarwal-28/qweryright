@@ -8,8 +8,5 @@ export const Route = createFileRoute('/query-typer')({
 })
 
 function RouteComponent() {
-     const theme = Route.useLoaderData();
-  return <>
-  <TypingTest theme={theme}/>
-  </>
+  return <TypingTest />
 }

@@ -5,13 +5,10 @@ import { ModeSelector } from "./mode-selector";
 import { QueryDisplay } from "./query-display";
 import { Results } from "./results";
 import type { QueryType, Difficulty } from "./data/queries";
+import { useTheme } from "@/store/theme-store";
 
-type Theme="light"|"dark"
-export const TypingTest = ({
-    theme
-}:{
-    theme:Theme
-}) => {
+export const TypingTest = () => {
+  const theme = useTheme();
   const [queryType, setQueryType] = useState<QueryType>("sql");
   const [difficulty, setDifficulty] = useState<Difficulty | "all">("all");
   const [timerDuration, setTimerDuration] = useState(30);

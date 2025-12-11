@@ -30,11 +30,10 @@ import {
 } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { sqlSuggestions } from '@/lib/sql-suggestions';
-import { getThemeServerFn } from '@/lib/theme';
+import { useTheme } from '@/store/theme-store';
 
 export const Route = createFileRoute('/types-generator')({
   component: RouteComponent,
-  loader:()=>getThemeServerFn(),
 })
 
 // --- Types & Constants ---
@@ -315,13 +314,13 @@ export default function RouteComponent() {
   const [outputCode, setOutputCode] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const [isEditorMounted, setIsEditorMounted] = useState(false);
-  const theme= Route.useLoaderData();
-  // State to hold the monaco instance
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [, setMonacoInstance] = useState<any>(null);
+  const [monacoInstance, setMonacoInstance] = useState<any>(null);
+  const [editorInstance, setEditorInstance] = useState<any>(null);
   
-  // State for the currently active theme string
-  const [editorTheme, setEditorTheme] = useState('vs-dark');
+  // Get theme from store
+  const theme = useTheme();
+  const editorTheme = theme === 'dark' ? 'shadcn-dark' : 'shadcn-light';
 
   // Configuration State
   const [config, setConfig] = useState<GeneratorConfig>({
@@ -362,33 +361,18 @@ export default function RouteComponent() {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  // --- Dynamic Theme Handling ---
+  // Update Monaco theme when theme changes
   useEffect(() => {
-    // 1. Initial Check
-    
-    const isSystemDark = document.documentElement.classList.contains("dark");
-    setEditorTheme(isSystemDark ? 'shadcn-dark' : 'shadcn-light');
-    setEditorTheme(theme==="dark" ? 'shadcn-dark' : 'shadcn-light');
-    // 2. Observe changes
-    const observer = new MutationObserver(() => {
-      const isDark = document.documentElement.classList.contains("dark");
-      // Update state, which updates the <Editor theme={...} /> prop
-      setEditorTheme(isDark ? 'shadcn-dark' : 'shadcn-light');
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []); // Run once on mount to set up observer
-
+    if (monacoInstance && editorInstance) {
+      monacoInstance.editor.setTheme(editorTheme);
+    }
+  }, [theme, editorTheme, monacoInstance, editorInstance]);
 
   // Monaco Setup
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     setIsEditorMounted(true);
     setMonacoInstance(monaco);
+    setEditorInstance(editor);
 
     // Define TWO themes: one for light, one for dark
     monaco.editor.defineTheme('shadcn-light', {
@@ -408,6 +392,9 @@ export default function RouteComponent() {
         'editor.background': '#00000000', // Transparent
       }
     });
+
+    // Immediately set the correct theme
+    monaco.editor.setTheme(editorTheme);
 
     // Language configuration (SQL)
     monaco.languages.setLanguageConfiguration('sql', {
@@ -540,7 +527,7 @@ export default function RouteComponent() {
             
             <div className="flex-1 relative">
                 {!isEditorMounted && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-muted/5 z-10">
+                    <div className="absolute inset-0 flex items-center justify-center bg-background z-10">
                         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                     </div>
                 )}
@@ -556,6 +543,7 @@ export default function RouteComponent() {
                     options={{
                         padding: { top: 16, bottom: 16 },
                     }}
+                    loading={<div className="h-full w-full bg-background" />}
                     className="bg-transparent"
                 />
             </div>

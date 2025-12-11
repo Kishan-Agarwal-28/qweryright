@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { TbCircleHalf2 } from "react-icons/tb";
 import { flushSync } from "react-dom"
 
 import { cn } from "@/lib/utils"
+import { useTheme, useToggleTheme } from "@/store/theme-store"
 
 interface AnimatedThemeTogglerProps
   extends React.ComponentPropsWithoutRef<"button"> {
@@ -14,34 +15,18 @@ export const AnimatedThemeToggler = ({
   duration = 400,
   ...props
 }: AnimatedThemeTogglerProps) => {
-  const [isDark, setIsDark] = useState(false)
+  const theme = useTheme()
+  const toggleThemeStore = useToggleTheme()
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => {
-    const updateTheme = () => {
-      setIsDark(document.documentElement.classList.contains("dark"))
-    }
-
-    updateTheme()
-
-    const observer = new MutationObserver(updateTheme)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    })
-
-    return () => observer.disconnect()
-  }, [])
+  const isDark = theme === 'dark'
 
   const toggleTheme = useCallback(async () => {
     if (!buttonRef.current) return
 
     await document.startViewTransition(() => {
       flushSync(() => {
-        const newTheme = !isDark
-        setIsDark(newTheme)
-        document.documentElement.classList.toggle("dark")
-        document.cookie = `theme=${newTheme ? "dark" : "light"}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; SameSite=Strict; Secure`
+        toggleThemeStore()
       })
     }).ready
 
@@ -67,7 +52,7 @@ export const AnimatedThemeToggler = ({
         pseudoElement: "::view-transition-new(root)",
       }
     )
-  }, [isDark, duration])
+  }, [toggleThemeStore, duration])
 
   return (
     <button
