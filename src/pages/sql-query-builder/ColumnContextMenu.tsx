@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { 
   ColumnRef, FilterCondition, SortDirection, WindowConfig,
   FILTER_OPERATORS, AGGREGATE_FUNCTIONS, WINDOW_FUNCTIONS, generateId
-} from '@/lib/query-engine';
+} from '@/lib/sql-query-engine';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";

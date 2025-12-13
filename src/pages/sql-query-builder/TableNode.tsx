@@ -8,7 +8,7 @@ import {
   Search, X
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { ParsedColumn } from '@/lib/query-engine';
+import { ParsedColumn } from '@/lib/sql-query-engine';
 import { Input } from '@/components/ui/input';
 
 const iconMap: Record<string, React.ElementType> = {

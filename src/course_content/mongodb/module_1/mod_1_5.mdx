@@ -139,9 +139,9 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 This aggregation pipeline will output ORD001, ORD003, and ORD005.
 
-```
 
 ### Example 2: Filtering by Multiple Fields (AND condition)
 
@@ -156,9 +156,9 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 This pipeline will return ORD001 and ORD003.
 
-```
 
 ### Example 3: Filtering with Comparison Operators
 
@@ -172,9 +172,9 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 This will output ORD001, ORD003, and ORD005.
 
-```
 
 ### Example 4: Filtering on Embedded Documents
 
@@ -188,9 +188,9 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 This will include ORD001, ORD002, ORD003, and ORD005.
 
-```
 
 ## Reshaping Document Output with the $project Stage
 
@@ -211,6 +211,7 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 The output for each document will look like:
 
 ```json
@@ -218,7 +219,7 @@ The output for each document will look like:
 // ... other documents
 
 ```
-```
+
 
 
 ### Example 2: Excluding Specific Fields
@@ -234,9 +235,9 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 The output will contain all fields except items and shippingAddress. Note that if _id is not explicitly excluded (_id: 0), it will be included by default when other fields are excluded.
 
-```
 
 ### Example 3: Creating New Fields
 
@@ -254,19 +255,17 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 The output for an order like ORD001 would be:
 
 ```json
 { "orderId": "ORD001", "customerId": "CUST001", "orderValue": 120.50, "isHighValue": true }
-// ...
+```
 For ORD004:
 
 ```json
 { "orderId": "ORD004", "customerId": "CUST003", "orderValue": 45.00, "isHighValue": false }
-// ...
 
-```
-```
 ```
 
 
@@ -285,13 +284,11 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 The output for ORD001:
-
 ```json
 { "orderId": "ORD001", "customerId": "CUST001", "shippingCity": "Anytown" }
-// ...
 
-```
 ```
 
 
@@ -319,8 +316,8 @@ db.orders.aggregate([
     } // Step 2: Project only the desired fields
   }
 ]);
-This pipeline first reduces the number of documents to only those with status: "completed" (ORD001, ORD003, ORD005). Then, for these three documents, it projects only the orderId, customerId, and totalAmount fields.
 ```
+This pipeline first reduces the number of documents to only those with status: "completed" (ORD001, ORD003, ORD005). Then, for these three documents, it projects only the orderId, customerId, and totalAmount fields.
 
 Output:
 

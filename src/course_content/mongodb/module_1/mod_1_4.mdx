@@ -56,6 +56,7 @@ Consider a products collection with documents like this:
     "tags": ["gaming", "backlit"]
   }
 ]
+```
 To only retrieve the name and price of products:
 
 ```javascript
@@ -68,6 +69,7 @@ db.products.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -87,6 +89,7 @@ db.products.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -127,9 +130,7 @@ Output:
 ]
 
 ```
-```
-```
-```
+
 
 
 ## Renaming Fields
@@ -148,6 +149,7 @@ db.products.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -156,14 +158,11 @@ Output:
   { "productName": "Wireless Mouse Z", "unitPrice": 25 },
   { "productName": "Mechanical Keyboard K", "unitPrice": 80 }
 ]
-
 ```
-```
-
 
 ## Reshaping and Computing New Fields
 
-This is where $project becomes extremely powerful. You can use aggregation expressions to perform calculations, string manipulations, array operations, and more, creating entirely new fields or transforming existing ones.
+This is where `$project` becomes extremely powerful. You can use aggregation expressions to perform calculations, string manipulations, array operations, and more, creating entirely new fields or transforming existing ones.
 
 ### Simple Calculations
 
@@ -181,6 +180,7 @@ db.products.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -190,7 +190,6 @@ Output:
   { "name": "Mechanical Keyboard K", "price": 80, "totalValue": 84 }
 ]
 
-```
 ```
 
 
@@ -208,6 +207,7 @@ db.products.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -217,7 +217,6 @@ Output:
   { "productName": "Mechanical Keyboard K", "manufacturerName": "TechCorp" }
 ]
 
-```
 ```
 
 
@@ -235,6 +234,7 @@ db.products.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -245,7 +245,7 @@ Output:
 ]
 
 ```
-```
+
 
 
 ### Concatenating Strings
@@ -265,6 +265,7 @@ db.products.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -286,7 +287,6 @@ Output:
   }
 ]
 
-```
 ```
 
 
@@ -348,6 +348,7 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -363,14 +364,11 @@ Output:
     "shippingCity": "Otherville"
   }
 ]
-
 ```
-```
-
 
 ### Example 2: Calculating Total Price Per Item in an Order
 
-Here, we want to add a totalPrice field within each item object, calculated as quantity * unitPrice. This requires using a $map expression to iterate over the items array.
+Here, we want to add a `totalPrice` field within each item object, calculated as `quantity * unitPrice`. This requires using a `$map` expression to iterate over the items array.
 
 ```javascript
 db.orders.aggregate([
@@ -396,6 +394,7 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -420,7 +419,7 @@ Output:
 ]
 
 ```
-```
+
 
 
 ### Example 3: Combining $match and $project
@@ -444,6 +443,7 @@ db.orders.aggregate([
     }
   }
 ]);
+```
 Output:
 
 ```json
@@ -452,7 +452,6 @@ Output:
 ]
 This demonstrates how $project can be used to prepare data for further aggregation stages or for final display. Its flexibility with aggregation expressions allows for significant data transformation within the pipeline.
 
-```
 ```
 
 
@@ -514,6 +513,7 @@ db.products.aggregate([
     }
   }
 ]);
+```
 Output for the API:
 
 ```json
@@ -521,12 +521,12 @@ Output for the API:
   { "productName": "Super Widget", "currentPrice": 99.99, "inStock": true },
   { "productName": "Mega Device", "currentPrice": 149.50, "inStock": false } // If stock was 0
 ]
-This $project stage effectively transforms the comprehensive product documents into a streamlined format, containing only the necessary fields for the category listing page. This reduces payload size, improves API response times, and simplifies data consumption for the front-end application.
-```
 ```
 
+This `$project` stage effectively transforms the comprehensive product documents into a streamlined format, containing only the necessary fields for the category listing page. This reduces payload size, improves API response times, and simplifies data consumption for the front-end application.
 
-Conclusion and Next Steps
-The $project stage is a fundamental building block in MongoDB aggregation pipelines, enabling precise control over the structure and content of your documents. You learned how to include and exclude fields, rename them, and most importantly, compute new fields using a wide array of aggregation expressions. Its ability to reshape data makes it indispensable for preparing documents for subsequent pipeline stages or for final consumption by an application.
+## Conclusion and Next Steps
 
-In the next lesson, you will apply the knowledge gained from $match and $project in a hands-on lab. This will solidify your understanding of these core stages and prepare you for more advanced data manipulation techniques in subsequent modules.
+The `$project` stage is a fundamental building block in MongoDB aggregation pipelines, enabling precise control over the structure and content of your documents. You learned how to include and exclude fields, rename them, and most importantly, compute new fields using a wide array of aggregation expressions. Its ability to reshape data makes it indispensable for preparing documents for subsequent pipeline stages or for final consumption by an application.
+
+In the next lesson, you will apply the knowledge gained from `$match` and `$project` in a hands-on lab. This will solidify your understanding of these core stages and prepare you for more advanced data manipulation techniques in subsequent modules.

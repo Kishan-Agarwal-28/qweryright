@@ -66,6 +66,9 @@ const config = defineConfig({
     exclude: ['@electric-sql/pglite'],
   },
   assetsInclude: ['**/*.wasm', '**/*.data'],
+  ssr: {
+    noExternal: ['@monaco-editor/react', 'monaco-editor'],
+  },
 })
 
 export default config

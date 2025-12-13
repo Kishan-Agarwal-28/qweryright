@@ -12,7 +12,7 @@ import {
   SortDirection,
   WINDOW_FUNCTIONS,
   generateId 
-} from '@/lib/query-engine';
+} from '@/lib/sql-query-engine';
 import { cn } from "@/lib/utils";
 
 interface ExpressionBuilderProps {

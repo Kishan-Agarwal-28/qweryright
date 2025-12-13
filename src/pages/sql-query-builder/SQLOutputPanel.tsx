@@ -1,7 +1,7 @@
 import { Copy, Check, Download, Wand2 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { highlightSQL } from '@/lib/query-engine';
+import { highlightSQL } from '@/lib/sql-query-engine';
 import {toast} from "sonner"
 
 interface SQLOutputPanelProps {

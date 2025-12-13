@@ -10,7 +10,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import Editor from '@monaco-editor/react';
+import Editor, { type OnMount } from '@monaco-editor/react';
 import { useDebounce } from 'use-debounce';
 import { Database, Columns, Sparkles, RotateCcw, MousePointer2, Code2, Settings2, Layers, Wand2, LayoutGrid } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -23,14 +23,15 @@ import {
   ColumnRef,
   QueryOptions,
   SchemaEdge
-} from '@/lib/query-engine';
+} from '@/lib/sql-query-engine';
 import TableNode from './TableNode';
 import ColumnContextMenu from './ColumnContextMenu';
 import QueryOptionsPanel from './QueryOptionsPanel';
 import SelectedColumnsPanel from './SelectedColumnsPanel';
 import SQLOutputPanel from './SQLOutputPanel';
 import CTEBuilderPanel from './CTEBuilderPanel';
-import { CTEDefinition, SubqueryDefinition } from '@/lib/query-engine';
+import { CTEDefinition, SubqueryDefinition } from '@/lib/sql-query-engine';
+import { useTheme } from '@/store/theme-store';
 
 const DEFAULT_SCHEMA = `// 🏢 Employee Management System
 // Define tables with [icon: name, color: #hex]
@@ -83,6 +84,11 @@ function QueryBuilderContent() {
   const [debouncedSchema] = useDebounce(schemaCode, 400);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [monacoInstance, setMonacoInstance] = useState<any>(null);
+  const [editorInstance, setEditorInstance] = useState<any>(null);
+  
+  const theme = useTheme();
+  const editorTheme = theme === 'dark' ? 'shadcn-dark' : 'shadcn-light';
   
   const [queryState, setQueryState] = useState<ColumnRef[]>([]);
   const [queryOptions, setQueryOptions] = useState<QueryOptions>({
@@ -261,6 +267,41 @@ function QueryBuilderContent() {
     ? queryState.find(q => q.table === contextMenu.table && q.column === contextMenu.column)
     : undefined;
 
+  // Update Monaco theme when theme changes
+  useEffect(() => {
+    if (monacoInstance && editorInstance) {
+      monacoInstance.editor.setTheme(editorTheme);
+    }
+  }, [theme, editorTheme, monacoInstance, editorInstance]);
+
+  // Monaco Editor Mount Handler
+  const handleEditorDidMount: OnMount = (editor, monaco) => {
+    setMonacoInstance(monaco);
+    setEditorInstance(editor);
+
+    // Define custom themes
+    monaco.editor.defineTheme('shadcn-light', {
+      base: 'vs',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#00000000',
+      }
+    });
+
+    monaco.editor.defineTheme('shadcn-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#00000000',
+      }
+    });
+
+    // Set initial theme
+    monaco.editor.setTheme(editorTheme);
+  };
+
   return (
     <div className="h-screen w-full bg-background flex flex-col overflow-hidden">
       {/* Header */}
@@ -315,7 +356,8 @@ function QueryBuilderContent() {
                   defaultLanguage="plaintext"
                   value={schemaCode}
                   onChange={(val) => setSchemaCode(val || "")}
-                  theme="vs-dark"
+                  theme={editorTheme}
+                  onMount={handleEditorDidMount}
                   options={{ 
                     minimap: { enabled: false }, 
                     fontSize: 12, 
@@ -333,6 +375,7 @@ function QueryBuilderContent() {
                       verticalScrollbarSize: 8
                     }
                   }}
+                  loading={<div className="h-full w-full bg-background" />}
                 />
               </div>
             </ResizablePanel>

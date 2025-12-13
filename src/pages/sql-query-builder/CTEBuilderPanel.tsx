@@ -9,7 +9,7 @@ import {
   CTEDefinition,
   SubqueryDefinition,
   generateId 
-} from '@/lib/query-engine';
+} from '@/lib/sql-query-engine';
 
 
 interface CTEBuilderPanelProps {

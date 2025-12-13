@@ -1,7 +1,7 @@
 
 import { Trash2, Calculator, ArrowDownUp, Filter, Tag, Layers, X } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { ColumnRef, AGGREGATE_FUNCTIONS } from '@/lib/query-engine';
+import { ColumnRef, AGGREGATE_FUNCTIONS } from '@/lib/sql-query-engine';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

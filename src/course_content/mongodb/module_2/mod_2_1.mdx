@@ -21,6 +21,7 @@ Consider a collection named orders with documents like:
   { "_id": 3, "customerId": "A101", "orderDate": ISODate("2023-01-16T09:30:00Z"), "totalAmount": 75.20, "items": ["Monitor"] },
   { "_id": 4, "customerId": "A103", "orderDate": ISODate("2023-01-16T14:00:00Z"), "totalAmount": 300.50, "items": ["Webcam", "Headset"] }
 ]
+```
 To group these orders by customerId and find the total count of orders for each customer:
 
 ```javascript
@@ -32,6 +33,7 @@ db.orders.aggregate([
     }
   }
 ])
+```
 Result:
 
 ```json
@@ -40,14 +42,13 @@ Result:
   { "_id": "A102", "orderCount": 1 },
   { "_id": "A103", "orderCount": 1 }
 ]
+```
+
 In this example:
 
-_id: "$customerId" specifies that documents should be grouped based on the unique values of the customerId field.
-orderCount: { $sum: 1 } is an accumulator operator. For each document processed within a group, $sum: 1 adds 1 to the orderCount field, effectively counting the documents.
+- `_id: "$customerId"` specifies that documents should be grouped based on the unique values of the `customerId` field.
+- `orderCount: { $sum: 1 }` is an accumulator operator. For each document processed within a group, `$sum: 1` adds 1 to the `orderCount` field, effectively counting the documents.
 
-```
-```
-```
 
 
 ### Grouping by Multiple Fields (Compound Grouping Key)
@@ -66,6 +67,7 @@ Consider a sales collection:
   { "_id": 4, "region": "East", "category": "Electronics", "amount": 1500 },
   { "_id": 5, "region": "West", "category": "Apparel", "amount": 450 }
 ]
+```
 To group by both region and category to see the total sales for each unique combination:
 
 ```javascript
@@ -80,6 +82,7 @@ db.sales.aggregate([
     }
   }
 ])
+```
 Result:
 
 ```json
@@ -89,11 +92,10 @@ Result:
   { "_id": { "region": "East", "category": "Electronics" }, "totalSales": 2700 },
   { "_id": { "region": "West", "category": "Electronics" }, "totalSales": 800 }
 ]
-Here, the _id is an embedded document { region: "$region", category: "$category" }. MongoDB creates a new group for every unique combination of region and category values.
+```
 
-```
-```
-```
+Here, the `_id` is an embedded document `{ region: "$region", category: "$category" }`. MongoDB creates a new group for every unique combination of region and category values.
+
 
 
 ### Grouping by an Expression
@@ -113,6 +115,7 @@ db.orders.aggregate([
     }
   }
 ])
+```
 Result (assuming orderDate values from the orders collection are in January, which is month 1):
 
 ```json
@@ -121,7 +124,6 @@ Result (assuming orderDate values from the orders collection are in January, whi
 ]
 In this case, $month is a date aggregation operator (which will be covered in detail in Module 4). It extracts the month (as a number from 1 to 12) from a date field, and this extracted value then serves as the grouping key.
 
-```
 ```
 
 
@@ -155,6 +157,7 @@ Collection: productsSold
   { "_id": 4, "productId": "P003", "productName": "Monitor Z", "quantity": 3, "price": 300 },
   { "_id": 5, "productId": "P002", "productName": "Keyboard Y", "quantity": 3, "price": 75 }
 ]
+```
 Aggregation Pipeline:
 
 ```javascript
@@ -168,13 +171,16 @@ db.productsSold.aggregate([
     }
   }
 ])
-Explanation:
+```
 
-_id: "$productId" groups all sales records for the same product together.
-productName: { $first: "$productName" } takes the productName from the first document encountered in each group. This is safe here because productName is expected to be consistent for a given productId.
-totalQuantitySold: { $sum: "$quantity" } adds up the quantity for all documents in the group.
-averagePrice: { $avg: "$price" } calculates the average price for all documents in the group.
-Result:
+**Explanation:**
+
+- `_id: "$productId"` groups all sales records for the same product together.
+- `productName: { $first: "$productName" }` takes the `productName` from the first document encountered in each group. This is safe here because `productName` is expected to be consistent for a given `productId`.
+- `totalQuantitySold: { $sum: "$quantity" }` adds up the quantity for all documents in the group.
+- `averagePrice: { $avg: "$price" }` calculates the average price for all documents in the group.
+
+**Result:**
 
 ```json
 [
@@ -184,8 +190,7 @@ Result:
 ]
 
 ```
-```
-```
+
 
 
 ### Scenario 2: Employee Department Analysis
@@ -202,6 +207,7 @@ Collection: employees
   { "_id": 4, "name": "David", "department": "Engineering", "salary": 110000 },
   { "_id": 5, "name": "Eve", "department": "Marketing", "salary": 80000 }
 ]
+```
 Aggregation Pipeline:
 
 ```javascript
@@ -214,11 +220,13 @@ db.employees.aggregate([
     }
   }
 ])
+```
 Explanation:
-
+```
 _id: "$department" groups employees by their respective departments.
 employeeCount: { $sum: 1 } counts each employee record within a department group.
 maxSalary: { $max: "$salary" } finds the highest salary value among all employees in that department.
+```
 Result:
 
 ```json
@@ -229,8 +237,7 @@ Result:
 ]
 
 ```
-```
-```
+
 
 
 ## Exercises and Practice Activities

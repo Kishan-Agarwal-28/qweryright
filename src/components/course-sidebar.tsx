@@ -3,14 +3,14 @@ import { ChevronDown, ChevronRight, BookOpen, Database } from 'lucide-react';
 import { courseStructure } from '@/lib/course-structure';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Link } from '@tanstack/react-router';
 
 interface CourseSidebarProps {
   currentLessonSlug: string;
-  onLessonSelect: (slug: string) => void;
   courseType?: string;
 }
 
-export function CourseSidebar({ currentLessonSlug, onLessonSelect, courseType = 'sql' }: CourseSidebarProps) {
+export function CourseSidebar({ currentLessonSlug, courseType = 'sql' }: CourseSidebarProps) {
   const currentCourseStructure = courseStructure[courseType] || courseStructure.sql;
   const [expandedModules, setExpandedModules] = useState<Set<string>>(
     new Set(currentCourseStructure.map(m => m.id))
@@ -62,17 +62,25 @@ export function CourseSidebar({ currentLessonSlug, onLessonSelect, courseType = 
             {expandedModules.has(module.id) && (
               <div className="ml-4 mt-1 space-y-1">
                 {module.lessons.map((lesson) => (
+                  <Link
+                  key={lesson.id}
+                  to="/learning/$course/$courseId"
+                  params={{
+                    course:courseType,
+                    courseId:lesson.slug
+                  }
+                  }
+                  >
                   <Button
-                    key={lesson.id}
                     variant="ghost"
                     className={cn(
                       "w-full justify-start px-3 py-2 h-auto text-sm font-normal",
                       currentLessonSlug === lesson.slug && "bg-accent"
                     )}
-                    onClick={() => onLessonSelect(lesson.slug)}
                   >
                     {lesson.title}
                   </Button>
+                  </Link>
                 ))}
               </div>
             )}

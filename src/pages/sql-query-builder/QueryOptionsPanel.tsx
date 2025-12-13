@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { QueryOptions, SetOperation, JOIN_TYPES, SET_OPERATIONS, generateId } from '@/lib/query-engine';
+import { QueryOptions, SetOperation, JOIN_TYPES, SET_OPERATIONS, generateId } from '@/lib/sql-query-engine';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface QueryOptionsPanelProps {

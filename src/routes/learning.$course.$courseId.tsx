@@ -1,13 +1,32 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { courseStructure, findLessonBySlug } from '@/lib/course-structure';
 
 export const Route = createFileRoute('/learning/$course/$courseId')({
+  beforeLoad: ({ params }) => {
+    const { course: courseType, courseId } = params;
+    const lessonData = findLessonBySlug(courseType, courseId);
+    
+    // If lesson not found, redirect to first lesson
+    if (!lessonData?.lesson) {
+      const currentCourseStructure = courseStructure[courseType as 'sql' | 'mongodb'] || courseStructure.sql;
+      const firstModule = currentCourseStructure[0];
+      const firstLesson = firstModule?.lessons[0];
+      
+      if (firstLesson) {
+        throw redirect({
+          to: '/learning/$course/$courseId',
+          params: { course: courseType, courseId: firstLesson.slug },
+          replace: true,
+        });
+      }
+    }
+  },
   component: RouteComponent,
 })
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { CourseSidebar } from '@/components/course-sidebar';
 import { mdxComponents } from '@/components/mdx-components';
-import { courseStructure, findLessonBySlug } from '@/lib/course-structure';
 import { useNavigate } from '@tanstack/react-router';
 
 
@@ -178,39 +197,17 @@ const mongodbMdxModules = {
 } as const;
 
 export default function RouteComponent() {
-  type CourseType = 'sql' | 'mongodb';
-  const navigate = useNavigate();
+
   const { course: courseType, courseId } = Route.useParams();
   
   // Ref to track the content for reading time calculation
   const contentRef = useRef<HTMLDivElement>(null); 
 
   const mdxModules = courseType === 'mongodb' ? mongodbMdxModules : sqlMdxModules;
-  const currentCourseStructure = courseStructure[courseType as CourseType] || courseStructure.sql;
 
   const lessonData = findLessonBySlug(courseType, courseId);
   const currentLesson = lessonData?.lesson;
 
-  useEffect(() => {
-    if (!currentLesson) {
-      const firstModule = currentCourseStructure[0];
-      const firstLesson = firstModule?.lessons[0];
-      if (firstLesson) {
-        navigate({
-          to: '/learning/$course/$courseId',
-          params: { course: courseType, courseId: firstLesson.slug },
-          replace: true,
-        });
-      }
-    }
-  }, [currentLesson, courseType, currentCourseStructure, navigate, courseId]);
-
-  const handleLessonSelect = (slug: string) => {
-    navigate({
-      to: '/learning/$course/$courseId',
-      params: { course: courseType, courseId: slug },
-    });
-  };
 
   const mdxModule = currentLesson ? mdxModules[currentLesson.file as keyof typeof mdxModules] : null;
   const MdxContent = mdxModule;
@@ -221,7 +218,6 @@ export default function RouteComponent() {
       <div className="w-80 shrink-0 hidden md:block">
         <CourseSidebar
           currentLessonSlug={courseId}
-          onLessonSelect={handleLessonSelect}
           courseType={courseType}
         />
       </div>
@@ -233,8 +229,7 @@ export default function RouteComponent() {
       >
         <div className="max-w-4xl mx-auto px-8 py-12">
           
-          {/* --- NEW HEADER COMPONENT --- */}
-          {/* We pass the contentRef so the header can count words */}
+       
           <PageHeader contentRef={contentRef as React.RefObject<HTMLDivElement>} className="mb-8" />
           
           {/* Article Content */}
