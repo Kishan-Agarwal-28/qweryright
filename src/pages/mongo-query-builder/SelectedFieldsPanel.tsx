@@ -1,9 +1,10 @@
-import { Trash2, Calculator, ArrowDownUp, Filter, Tag, X, GripVertical, Sigma } from 'lucide-react';
+import { Trash2,  ArrowDownUp, Filter, Tag, X, GripVertical, Sigma } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { ColumnRef, AGGREGATE_FUNCTIONS, AggregateFunction } from '@/lib/mongo-query-engine';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface SelectedFieldsPanelProps {
   columns: ColumnRef[];
@@ -45,7 +46,8 @@ export default function SelectedFieldsPanel({ columns, onChange, onColumnClick }
   }
 
   return (
-    <div className="space-y-2 p-3">
+  <ScrollArea className="h-screen">
+      <div className="space-y-2 p-3">
       {columns.map((col, idx) => {
         const collection = col.collection || col.table || '';
         const field = col.field || col.column || '';
@@ -211,5 +213,6 @@ export default function SelectedFieldsPanel({ columns, onChange, onColumnClick }
         );
       })}
     </div>
+    </ScrollArea>
   );
 }

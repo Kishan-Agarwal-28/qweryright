@@ -1,8 +1,10 @@
-import { Copy, Check, Download, Leaf, Play, FileJson } from 'lucide-react';
+import { Copy, Check, Download, Leaf, FileJson } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { highlightMQL } from '@/lib/mongo-query-engine';
 import { toast } from "sonner";
+import { ScrollArea } from '@/components/ui/scroll-area';
+
 
 interface PipelineOutputPanelProps {
   pipeline: string;
@@ -53,6 +55,7 @@ export default function PipelineOutputPanel({ pipeline }: PipelineOutputPanelPro
   const lineCount = pipeline.split('\n').length;
 
   return (
+ <ScrollArea className='h-screen'>
     <div className="h-full flex flex-col bg-card">
       {/* Toolbar */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-mongo/5">
@@ -109,24 +112,28 @@ export default function PipelineOutputPanel({ pipeline }: PipelineOutputPanelPro
       </div>
 
       {/* Output */}
-      <div className="flex-1 overflow-auto p-4">
+    
+       <div className="flex-1 overflow-auto p-4">
         {isPlaceholder ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-12">
             <div className="w-16 h-16 rounded-2xl bg-mongo/10 flex items-center justify-center mb-4 border border-mongo/20">
               <Leaf className="w-8 h-8 text-mongo/60" />
             </div>
             <div className="text-sm font-medium text-foreground mb-2">No Pipeline Yet</div>
-            <div className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
+            <div className="text-xs text-muted-foreground max-w-60 leading-relaxed">
               Click on fields in your collections to start building your MongoDB aggregation pipeline.
             </div>
           </div>
         ) : (
-          <pre 
-            className="bg-background/50 border border-border rounded-xl p-4 overflow-x-auto text-sm font-mono leading-relaxed whitespace-pre-wrap"
-            dangerouslySetInnerHTML={{ __html: highlightMQL(pipeline) }}
+          
+          <div 
+          className="bg-background/50 border border-border rounded-xl p-4 overflow-x-auto text-sm font-mono leading-relaxed whitespace-pre-wrap "
+          dangerouslySetInnerHTML={{ __html: highlightMQL(pipeline) }}
           />
+         
         )}
       </div>
+
 
       {/* Footer Status */}
       {!isPlaceholder && (
@@ -144,5 +151,6 @@ export default function PipelineOutputPanel({ pipeline }: PipelineOutputPanelPro
         </div>
       )}
     </div>
+</ScrollArea>
   );
 }

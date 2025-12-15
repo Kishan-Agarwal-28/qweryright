@@ -11,8 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TypesGeneratorRouteImport } from './routes/types-generator'
 import { Route as QueryTyperRouteImport } from './routes/query-typer'
-import { Route as QueryBuilderRouteImport } from './routes/query-builder'
+import { Route as QueryOptimizerRouteImport } from './routes/query-optimizer'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LearningIndexRouteImport } from './routes/learning.index'
+import { Route as EditorQueryBuilderRouteImport } from './routes/$editor.query-builder'
+import { Route as LearningCourseIndexRouteImport } from './routes/learning.$course.index'
 import { Route as LearningCourseCourseIdRouteImport } from './routes/learning.$course.$courseId'
 
 const TypesGeneratorRoute = TypesGeneratorRouteImport.update({
@@ -25,14 +28,29 @@ const QueryTyperRoute = QueryTyperRouteImport.update({
   path: '/query-typer',
   getParentRoute: () => rootRouteImport,
 } as any)
-const QueryBuilderRoute = QueryBuilderRouteImport.update({
-  id: '/query-builder',
-  path: '/query-builder',
+const QueryOptimizerRoute = QueryOptimizerRouteImport.update({
+  id: '/query-optimizer',
+  path: '/query-optimizer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningIndexRoute = LearningIndexRouteImport.update({
+  id: '/learning/',
+  path: '/learning/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditorQueryBuilderRoute = EditorQueryBuilderRouteImport.update({
+  id: '/$editor/query-builder',
+  path: '/$editor/query-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningCourseIndexRoute = LearningCourseIndexRouteImport.update({
+  id: '/learning/$course/',
+  path: '/learning/$course/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearningCourseCourseIdRoute = LearningCourseCourseIdRouteImport.update({
@@ -43,56 +61,77 @@ const LearningCourseCourseIdRoute = LearningCourseCourseIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/query-builder': typeof QueryBuilderRoute
+  '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
+  '/$editor/query-builder': typeof EditorQueryBuilderRoute
+  '/learning': typeof LearningIndexRoute
   '/learning/$course/$courseId': typeof LearningCourseCourseIdRoute
+  '/learning/$course': typeof LearningCourseIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/query-builder': typeof QueryBuilderRoute
+  '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
+  '/$editor/query-builder': typeof EditorQueryBuilderRoute
+  '/learning': typeof LearningIndexRoute
   '/learning/$course/$courseId': typeof LearningCourseCourseIdRoute
+  '/learning/$course': typeof LearningCourseIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/query-builder': typeof QueryBuilderRoute
+  '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
+  '/$editor/query-builder': typeof EditorQueryBuilderRoute
+  '/learning/': typeof LearningIndexRoute
   '/learning/$course/$courseId': typeof LearningCourseCourseIdRoute
+  '/learning/$course/': typeof LearningCourseIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/query-builder'
+    | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
+    | '/$editor/query-builder'
+    | '/learning'
     | '/learning/$course/$courseId'
+    | '/learning/$course'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/query-builder'
+    | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
+    | '/$editor/query-builder'
+    | '/learning'
     | '/learning/$course/$courseId'
+    | '/learning/$course'
   id:
     | '__root__'
     | '/'
-    | '/query-builder'
+    | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
+    | '/$editor/query-builder'
+    | '/learning/'
     | '/learning/$course/$courseId'
+    | '/learning/$course/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  QueryBuilderRoute: typeof QueryBuilderRoute
+  QueryOptimizerRoute: typeof QueryOptimizerRoute
   QueryTyperRoute: typeof QueryTyperRoute
   TypesGeneratorRoute: typeof TypesGeneratorRoute
+  EditorQueryBuilderRoute: typeof EditorQueryBuilderRoute
+  LearningIndexRoute: typeof LearningIndexRoute
   LearningCourseCourseIdRoute: typeof LearningCourseCourseIdRoute
+  LearningCourseIndexRoute: typeof LearningCourseIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -111,11 +150,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QueryTyperRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/query-builder': {
-      id: '/query-builder'
-      path: '/query-builder'
-      fullPath: '/query-builder'
-      preLoaderRoute: typeof QueryBuilderRouteImport
+    '/query-optimizer': {
+      id: '/query-optimizer'
+      path: '/query-optimizer'
+      fullPath: '/query-optimizer'
+      preLoaderRoute: typeof QueryOptimizerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -123,6 +162,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learning/': {
+      id: '/learning/'
+      path: '/learning'
+      fullPath: '/learning'
+      preLoaderRoute: typeof LearningIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$editor/query-builder': {
+      id: '/$editor/query-builder'
+      path: '/$editor/query-builder'
+      fullPath: '/$editor/query-builder'
+      preLoaderRoute: typeof EditorQueryBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learning/$course/': {
+      id: '/learning/$course/'
+      path: '/learning/$course'
+      fullPath: '/learning/$course'
+      preLoaderRoute: typeof LearningCourseIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learning/$course/$courseId': {
@@ -137,10 +197,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  QueryBuilderRoute: QueryBuilderRoute,
+  QueryOptimizerRoute: QueryOptimizerRoute,
   QueryTyperRoute: QueryTyperRoute,
   TypesGeneratorRoute: TypesGeneratorRoute,
+  EditorQueryBuilderRoute: EditorQueryBuilderRoute,
+  LearningIndexRoute: LearningIndexRoute,
   LearningCourseCourseIdRoute: LearningCourseCourseIdRoute,
+  LearningCourseIndexRoute: LearningCourseIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

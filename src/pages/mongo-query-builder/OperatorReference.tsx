@@ -77,7 +77,7 @@ export default function OperatorReference() {
   ];
 
   return (
-    <ScrollArea className="h-full">
+    <ScrollArea className="h-screen">
       <div className="p-4 space-y-4">
         <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
           <BookOpen className="w-3.5 h-3.5" />

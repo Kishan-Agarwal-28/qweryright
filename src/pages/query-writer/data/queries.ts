@@ -9,422 +9,143 @@ export interface Query {
   charCount: number;
 }
 
-export const sqlQueries: Query[] = [
-  // Basic SQL - Short
-  {
-    id: "sql-1",
-    text: `SELECT * FROM users;`,
-    type: "sql",
-    difficulty: "basic",
-    charCount: 20,
-  },
-  {
-    id: "sql-2",
-    text: `SELECT name, email
-FROM customers
-WHERE active = true;`,
-    type: "sql",
-    difficulty: "basic",
-    charCount: 52,
-  },
-  {
-    id: "sql-3",
-    text: `INSERT INTO products (name, price)
-VALUES ('Widget', 29.99);`,
-    type: "sql",
-    difficulty: "basic",
-    charCount: 60,
-  },
-  {
-    id: "sql-4",
-    text: `UPDATE orders
-SET status = 'shipped'
-WHERE id = 1234;`,
-    type: "sql",
-    difficulty: "basic",
-    charCount: 53,
-  },
-  {
-    id: "sql-5",
-    text: `DELETE FROM sessions
-WHERE expires_at < NOW();`,
-    type: "sql",
-    difficulty: "basic",
-    charCount: 45,
-  },
-  {
-    id: "sql-6",
-    text: `SELECT id, name, created_at
-FROM users
-ORDER BY created_at DESC
-LIMIT 10;`,
-    type: "sql",
-    difficulty: "basic",
-    charCount: 70,
-  },
+// --- 1. The Ingredients ---
+const RESOURCES = {
+  tables: ['users', 'products', 'orders', 'employees', 'departments', 'transactions', 'logs', 'audit_trail', 'inventory', 'payments'],
+  columns: ['id', 'name', 'email', 'status', 'created_at', 'updated_at', 'amount', 'quantity', 'price', 'category', 'role', 'active', 'priority'],
+  values: ["'active'", "'pending'", "100", "true", "false", "'admin'", "'user'", "NULL", "'2024-01-01'", "5000", "'completed'"],
+  mongoCollections: ['users', 'products', 'orders', 'logs', 'events', 'devices', 'sessions', 'carts', 'invoices'],
+  mongoFields: ['status', 'age', 'role', 'isActive', 'createdAt', 'score', 'tags', 'category', 'price', 'quantity'],
+  operators: ['=', '>', '<', '>=', '<=', '!=', 'LIKE', 'IN'],
+  joins: ['JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN'],
+  aggs: ['COUNT', 'SUM', 'AVG', 'MAX', 'MIN']
+};
 
-  // Intermediate SQL
-  {
-    id: "sql-7",
-    text: `SELECT
-  u.name,
-  COUNT(o.id) AS order_count
-FROM users u
-LEFT JOIN orders o ON u.id = o.user_id
-GROUP BY u.id;`,
-    type: "sql",
-    difficulty: "intermediate",
-    charCount: 110,
-  },
-  {
-    id: "sql-8",
-    text: `SELECT *
-FROM products
-WHERE price BETWEEN 10 AND 100
-ORDER BY created_at DESC
-LIMIT 20;`,
-    type: "sql",
-    difficulty: "intermediate",
-    charCount: 95,
-  },
-  {
-    id: "sql-9",
-    text: `SELECT
-  category,
-  AVG(price) AS avg_price
-FROM products
-GROUP BY category
-HAVING AVG(price) > 50;`,
-    type: "sql",
-    difficulty: "intermediate",
-    charCount: 100,
-  },
-  {
-    id: "sql-10",
-    text: `SELECT *
-FROM employees
-WHERE department_id IN (
-  SELECT id
-  FROM departments
-  WHERE name = 'Engineering'
-);`,
-    type: "sql",
-    difficulty: "intermediate",
-    charCount: 115,
-  },
-  {
-    id: "sql-11",
-    text: `SELECT DISTINCT customer_id
-FROM orders
-WHERE order_date >= DATE_SUB(NOW(), INTERVAL 30 DAY);`,
-    type: "sql",
-    difficulty: "intermediate",
-    charCount: 85,
-  },
+// --- 2. Helpers ---
+const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
+const uuid = () => Math.random().toString(36).substring(2, 9);
 
-  // Advanced SQL
-  {
-    id: "sql-12",
-    text: `CREATE TABLE courses (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(50) NOT NULL UNIQUE KEY,
-  startDate DATE NOT NULL,
-  INDEX startDateIdx (startDate)
-);`,
-    type: "sql",
-    difficulty: "advanced",
-    charCount: 160,
-  },
-  {
-    id: "sql-13",
-    text: `WITH monthly_sales AS (
-  SELECT
-    DATE_TRUNC('month', order_date) AS month,
-    SUM(total) AS revenue
-  FROM orders
-  GROUP BY 1
-)
-SELECT
-  month,
-  revenue,
-  LAG(revenue) OVER (ORDER BY month) AS prev_month
-FROM monthly_sales;`,
-    type: "sql",
-    difficulty: "advanced",
-    charCount: 220,
-  },
-  {
-    id: "sql-14",
-    text: `SELECT
-  id,
-  name,
-  salary,
-  RANK() OVER (
-    PARTITION BY department_id
-    ORDER BY salary DESC
-  ) AS salary_rank
-FROM employees;`,
-    type: "sql",
-    difficulty: "advanced",
-    charCount: 145,
-  },
-  {
-    id: "sql-15",
-    text: `SELECT
-  p.name,
-  COALESCE(SUM(oi.quantity), 0) AS total_sold
-FROM products p
-LEFT JOIN order_items oi ON p.id = oi.product_id
-GROUP BY p.id
-ORDER BY total_sold DESC;`,
-    type: "sql",
-    difficulty: "advanced",
-    charCount: 170,
-  },
-  {
-    id: "sql-16",
-    text: `CREATE INDEX CONCURRENTLY idx_orders_user_date
-ON orders (user_id, order_date DESC)
-WHERE status = 'completed';`,
-    type: "sql",
-    difficulty: "advanced",
-    charCount: 120,
-  },
-];
+// --- 3. The Query Fabricator Engine (NOW WITH FORMATTING) ---
 
-export const mongodbQueries: Query[] = [
-  // Basic MongoDB
-  {
-    id: "mongo-1",
-    text: `db.users.find({})`,
-    type: "mongodb",
-    difficulty: "basic",
-    charCount: 17,
-  },
-  {
-    id: "mongo-2",
-    text: `db.products.find({
-  price: { $gte: 100 }
-})`,
-    type: "mongodb",
-    difficulty: "basic",
-    charCount: 45,
-  },
-  {
-    id: "mongo-3",
-    text: `db.orders.insertOne({
-  item: "widget",
-  qty: 5,
-  status: "pending"
-})`,
-    type: "mongodb",
-    difficulty: "basic",
-    charCount: 70,
-  },
-  {
-    id: "mongo-4",
-    text: `db.users.updateOne(
-  { _id: ObjectId("abc123") },
-  { $set: { active: true } }
-)`,
-    type: "mongodb",
-    difficulty: "basic",
-    charCount: 80,
-  },
-  {
-    id: "mongo-5",
-    text: `db.sessions.deleteMany({
-  expiresAt: { $lt: new Date() }
-})`,
-    type: "mongodb",
-    difficulty: "basic",
-    charCount: 60,
-  },
-  {
-    id: "mongo-6",
-    text: `db.products.find({
-  tags: { $in: ["electronics", "gadgets"] }
-}).sort({ price: -1 })`,
-    type: "mongodb",
-    difficulty: "basic",
-    charCount: 85,
-  },
+function generateSQL(difficulty: Difficulty): string {
+  const t = pick(RESOURCES.tables);
+  const t2 = pick(RESOURCES.tables.filter(x => x !== t));
+  const c = pick(RESOURCES.columns);
+  const c2 = pick(RESOURCES.columns.filter(x => x !== c));
+  const v = pick(RESOURCES.values);
+  const op = pick(RESOURCES.operators);
+  const agg = pick(RESOURCES.aggs);
+  const join = pick(RESOURCES.joins);
 
-  // Intermediate MongoDB
-  {
-    id: "mongo-7",
-    text: `db.orders.aggregate([
-  { $match: { status: "completed" } },
-  { $group: {
-    _id: "$userId",
-    total: { $sum: "$amount" }
-  }}
-])`,
-    type: "mongodb",
-    difficulty: "intermediate",
-    charCount: 130,
-  },
-  {
-    id: "mongo-8",
-    text: `db.users.aggregate([
-  { $lookup: {
-    from: "orders",
-    localField: "_id",
-    foreignField: "userId",
-    as: "orders"
-  }}
-])`,
-    type: "mongodb",
-    difficulty: "intermediate",
-    charCount: 130,
-  },
-  {
-    id: "mongo-9",
-    text: `db.posts.updateMany(
-  { views: { $gt: 1000 } },
-  {
-    $set: { popular: true },
-    $inc: { score: 10 }
+  if (difficulty === 'basic') {
+    // Added \n for cleaner basic queries
+    const templates = [
+      `SELECT *\nFROM ${t};`,
+      `SELECT ${c}, ${c2}\nFROM ${t}\nWHERE ${c} ${op} ${v};`,
+      `UPDATE ${t}\nSET ${c} = ${v}\nWHERE id = ${randomInt(1, 999)};`,
+      `DELETE FROM ${t}\nWHERE ${c} IS NULL;`,
+      `SELECT COUNT(*)\nFROM ${t};`,
+      `INSERT INTO ${t} (${c}, created_at)\nVALUES (${v}, NOW());`
+    ];
+    return pick(templates);
+  } 
+  
+  else if (difficulty === 'intermediate') {
+    // Added \n and indentation (2 spaces)
+    const templates = [
+      `SELECT *\nFROM ${t}\nWHERE ${c} IN (${v}, ${v}, ${v});`,
+      `SELECT\n  ${t}.id,\n  ${t2}.${c}\nFROM ${t}\n${join} ${t2} ON ${t}.id = ${t2}.${t}_id;`,
+      `SELECT\n  ${c},\n  ${agg}(${c2})\nFROM ${t}\nGROUP BY ${c}\nHAVING ${agg}(${c2}) > ${randomInt(10, 100)};`,
+      `SELECT DISTINCT ${c}\nFROM ${t}\nWHERE created_at > NOW() - INTERVAL ${randomInt(1, 30)} DAY;`,
+      `UPDATE ${t}\nSET\n  status = 'archived',\n  updated_at = NOW()\nWHERE ${c} = ${v};`
+    ];
+    return pick(templates);
+  } 
+  
+  else { // Advanced
+    // Complex formatting
+    const templates = [
+      `SELECT\n  ${c},\n  RANK() OVER (\n    PARTITION BY ${c2}\n    ORDER BY amount DESC\n  ) as rank_val\nFROM ${t};`,
+      `WITH monthly_stats AS (\n  SELECT\n    DATE_TRUNC('month', created_at) as m,\n    SUM(amount) as total\n  FROM ${t}\n  GROUP BY 1\n)\nSELECT * FROM monthly_stats;`,
+      `CREATE INDEX CONCURRENTLY idx_${t}_${c}\nON ${t}(${c}, ${c2})\nWHERE active = true;`,
+      `SELECT *\nFROM ${t}\nWHERE EXISTS (\n  SELECT 1\n  FROM ${t2}\n  WHERE ${t}.id = ${t2}.${t}_id\n  AND ${c} > ${randomInt(500, 1000)}\n);`,
+      `SELECT\n  ${c},\n  COALESCE(SUM(${c2}), 0) as total\nFROM ${t}\nLEFT JOIN ${t2} ON ${t}.id = ${t2}.${t}_id\nGROUP BY 1\nORDER BY 2 DESC;`
+    ];
+    return pick(templates);
   }
-)`,
-    type: "mongodb",
-    difficulty: "intermediate",
-    charCount: 105,
-  },
-  {
-    id: "mongo-10",
-    text: `db.analytics.aggregate([
-  { $unwind: "$events" },
-  { $group: {
-    _id: "$events.type",
-    count: { $sum: 1 }
-  }}
-])`,
-    type: "mongodb",
-    difficulty: "intermediate",
-    charCount: 115,
-  },
+}
 
-  // Advanced MongoDB
-  {
-    id: "mongo-11",
-    text: `db.orders.aggregate([
-  { $match: {
-    date: { $gte: ISODate("2024-01-01") }
-  }},
-  { $group: {
-    _id: {
-      $dateToString: {
-        format: "%Y-%m",
-        date: "$date"
-      }
-    },
-    revenue: { $sum: "$total" },
-    count: { $sum: 1 }
-  }},
-  { $sort: { _id: 1 } }
-])`,
-    type: "mongodb",
-    difficulty: "advanced",
-    charCount: 270,
-  },
-  {
-    id: "mongo-12",
-    text: `db.products.aggregate([
-  { $bucket: {
-    groupBy: "$price",
-    boundaries: [0, 50, 100, 200, 500],
-    default: "expensive",
-    output: {
-      count: { $sum: 1 },
-      avgRating: { $avg: "$rating" }
-    }
-  }}
-])`,
-    type: "mongodb",
-    difficulty: "advanced",
-    charCount: 200,
-  },
-  {
-    id: "mongo-13",
-    text: `db.users.aggregate([
-  { $graphLookup: {
-    from: "users",
-    startWith: "$managerId",
-    connectFromField: "managerId",
-    connectToField: "_id",
-    as: "reportingHierarchy"
-  }}
-])`,
-    type: "mongodb",
-    difficulty: "advanced",
-    charCount: 190,
-  },
-  {
-    id: "mongo-14",
-    text: `db.inventory.aggregate([
-  { $facet: {
-    byCategory: [
-      { $group: { _id: "$category", count: { $sum: 1 } } }
-    ],
-    lowStock: [
-      { $match: { qty: { $lt: 10 } } },
-      { $count: "total" }
-    ]
-  }}
-])`,
-    type: "mongodb",
-    difficulty: "advanced",
-    charCount: 210,
-  },
-];
+function generateMongo(difficulty: Difficulty): string {
+  const c = pick(RESOURCES.mongoCollections);
+  const c2 = pick(RESOURCES.mongoCollections.filter(x => x !== c));
+  const f = pick(RESOURCES.mongoFields);
+  const v = randomInt(1, 100);
 
-// Calculate char counts
-sqlQueries.forEach((q) => (q.charCount = q.text.length));
-mongodbQueries.forEach((q) => (q.charCount = q.text.length));
+  if (difficulty === 'basic') {
+    // Basic formatting
+    const templates = [
+      `db.${c}.find({\n  ${f}: "${pick(['A','B','C'])}"\n})`,
+      `db.${c}.findOne({\n  _id: ObjectId("${uuid()}")\n})`,
+      `db.${c}.insertOne({\n  ${f}: ${v},\n  created: new Date()\n})`,
+      `db.${c}.deleteMany({\n  ${f}: { $lt: ${v} }\n})`,
+      `db.${c}.find({})\n  .sort({ ${f}: -1 })\n  .limit(10)`
+    ];
+    return pick(templates);
+  } 
+  
+  else if (difficulty === 'intermediate') {
+    // Aggregation pipelines formatted vertically
+    const templates = [
+      `db.${c}.aggregate([\n  { $match: { ${f}: ${v} } },\n  { $group: {\n    _id: "$${f}",\n    count: { $sum: 1 }\n  }}\n])`,
+      `db.${c}.updateMany(\n  { ${f}: { $exists: false } },\n  { $set: { ${f}: "default" } }\n)`,
+      `db.${c}.find({\n  ${f}: { $in: [1, 2, 3] }\n})\n.sort({ _id: -1 })\n.skip(10)`,
+      `db.${c}.aggregate([\n  { $project: {\n    name: 1,\n    ${f}: 1,\n    _id: 0\n  }}\n])`
+    ];
+    return pick(templates);
+  } 
+  
+  else { // Advanced
+    // Complex pipelines
+    const templates = [
+      `db.${c}.aggregate([\n  { $lookup: {\n    from: "${c2}",\n    localField: "${f}",\n    foreignField: "_id",\n    as: "related_docs"\n  }},\n  { $unwind: "$related_docs" }\n])`,
+      `db.${c}.aggregate([\n  { $facet: {\n    "active": [{ $match: { isActive: true }}],\n    "inactive": [{ $match: { isActive: false }}]\n  }}\n])`,
+      `db.${c}.watch([\n  { $match: {\n    "operationType": "insert",\n    "fullDocument.${f}": { $gte: ${v} }\n  }}\n])`,
+      `db.${c}.updateMany(\n  { ${f}: ${v} },\n  [ { $set: {\n    modified: "$$NOW",\n    total: { $sum: ["$price", "$tax"] }\n  }} ]\n)`
+    ];
+    return pick(templates);
+  }
+}
 
-export const getAllQueries = (): Query[] => [...sqlQueries, ...mongodbQueries];
+// --- 4. Public API ---
 
-export const getQueriesByType = (type: QueryType): Query[] =>
-  type === "sql" ? sqlQueries : mongodbQueries;
-
-export const getQueriesByDifficulty = (
-  type: QueryType,
-  difficulty: Difficulty
-): Query[] => getQueriesByType(type).filter((q) => q.difficulty === difficulty);
-
-// Target characters per timer duration (approximate WPM of 40 = 200 chars/min)
-const getTargetChars = (timerDuration: number): number => {
-  const charsPerSecond = 3.5; // ~42 WPM
-  return Math.floor(timerDuration * charsPerSecond);
+export const generateSingleQuery = (type: QueryType, difficulty: Difficulty = 'basic'): Query => {
+  const text = type === 'sql' ? generateSQL(difficulty) : generateMongo(difficulty);
+  return {
+    id: `${type}-${uuid()}`,
+    text: text,
+    type: type,
+    difficulty: difficulty,
+    charCount: text.length
+  };
 };
 
 export const getQueriesForTimer = (
   type: QueryType,
   timerDuration: number,
-  difficulty?: Difficulty
+  difficulty: Difficulty = 'intermediate'
 ): Query[] => {
-  const targetChars = getTargetChars(timerDuration);
-  const source = difficulty
-    ? getQueriesByDifficulty(type, difficulty)
-    : getQueriesByType(type);
-
-  const shuffled = [...source].sort(() => Math.random() - 0.5);
+  const targetChars = Math.floor(timerDuration * 3.5);
   const selected: Query[] = [];
-  let totalChars = 0;
-
-  for (const query of shuffled) {
-    if (totalChars + query.charCount <= targetChars * 1.2) {
-      selected.push(query);
-      totalChars += query.charCount;
-      if (totalChars >= targetChars * 0.8) break;
+  let currentChars = 0;
+  
+  while (currentChars < targetChars * 1.2) {
+    const newQuery = generateSingleQuery(type, difficulty);
+    if (selected.length > 0 && selected[selected.length - 1].text === newQuery.text) {
+      continue; 
     }
+    selected.push(newQuery);
+    currentChars += newQuery.charCount;
   }
-
-  // Ensure at least one query
-  if (selected.length === 0 && shuffled.length > 0) {
-    selected.push(shuffled[0]);
-  }
-
   return selected;
 };

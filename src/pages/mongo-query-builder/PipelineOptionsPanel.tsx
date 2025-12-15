@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { QueryOptions, LOOKUP_TYPES, generateId } from '@/lib/mongo-query-engine';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface PipelineOptionsPanelProps {
   options: QueryOptions;
@@ -15,6 +16,7 @@ export default function PipelineOptionsPanel({ options, onChange }: PipelineOpti
   const lookupType = options.lookupType ?? (options.joinType === 'LEFT' ? 'preserveNull' : 'unwind');
 
   return (
+     <ScrollArea className='h-screen'>
     <div className="space-y-5">
       {/* Header */}
       <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -206,5 +208,6 @@ export default function PipelineOptionsPanel({ options, onChange }: PipelineOpti
         </CollapsibleContent>
       </Collapsible>
     </div>
+    </ScrollArea>
   );
 }

@@ -77,7 +77,7 @@ export default function MongoOutputPanel({ sql }: MongoOutputPanelProps) {
               <Wand2 className="w-7 h-7 text-muted-foreground" />
             </div>
             <div className="text-sm font-medium text-foreground mb-2">No pipeline yet</div>
-            <div className="text-xs text-muted-foreground max-w-[220px] leading-relaxed">
+            <div className="text-xs text-muted-foreground max-w-55 leading-relaxed">
               Click on fields in the schema diagram to start building your aggregation pipeline.
             </div>
           </div>

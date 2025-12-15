@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Plus, Trash2, X, ChevronDown, ChevronRight, Layers, Code, Hash } from 'lucide-react';
+import { Plus, Trash2, X, ChevronDown, ChevronRight, Layers, Code } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
 import { 
   CustomStages, 
   UnwindStage, 
@@ -13,6 +12,7 @@ import {
   SetStage,
   generateId 
 } from '@/lib/mongo-query-engine';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface CustomStagesPanelProps {
   stages: CustomStages;
@@ -124,7 +124,8 @@ export default function CustomStagesPanel({ stages, onChange, availableFields }:
   const totalStages = stages.unwind.length + stages.addFields.length + stages.set.length;
 
   return (
-    <div className="space-y-4">
+  <ScrollArea className='h-screen'>
+      <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -458,5 +459,6 @@ export default function CustomStagesPanel({ stages, onChange, availableFields }:
         </div>
       </div>
     </div>
+  </ScrollArea>
   );
 }

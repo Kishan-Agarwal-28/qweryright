@@ -14,7 +14,7 @@ import Editor, { type OnMount } from '@monaco-editor/react';
 import { useDebounce } from 'use-debounce';
 import { Leaf, Columns, Sparkles, RotateCcw, Code2, Settings2, Layers, LayoutGrid, Workflow } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   parseSchema, 
@@ -313,7 +313,7 @@ function MongoQueryBuilderContent() {
       {/* Header */}
       <header className="h-14 border-b border-border bg-card px-4 md:px-6 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-mongo/20 to-emerald-500/20 border border-mongo/30">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-linear-to-br from-mongo/20 to-emerald-500/20 border border-mongo/30">
             <Leaf className="w-5 h-5 text-mongo" />
           </div>
           <div>
@@ -395,8 +395,8 @@ function MongoQueryBuilderContent() {
                 proOptions={{ hideAttribution: true }}
               >
                 <Background color="hsl(var(--border))" gap={32} size={1} />
-                <Controls className="!bg-card !border-border !shadow-lg" />
-                <Panel position="top-right" className="!m-4">
+                <Controls className="bg-card! border-border! shadow-lg!" />
+                <Panel position="top-right" className="m-4!">
                   <Button variant="outline" size="sm" onClick={handleAutoLayout} className="gap-2 bg-card/90 shadow-lg border-mongo/20">
                     <LayoutGrid className="w-3.5 h-3.5" />
                     Auto Layout
@@ -404,7 +404,7 @@ function MongoQueryBuilderContent() {
                 </Panel>
                 <MiniMap 
                   nodeColor={(node) => node.data?.styles?.color || '#10b981'} 
-                  className="!bg-card/90 border border-border" 
+                  className="bg-card/90! border border-border" 
                   maskColor="hsl(var(--background) / 0.8)"
                 />
               </ReactFlow>
@@ -430,7 +430,10 @@ function MongoQueryBuilderContent() {
             {/* Output & Config */}
             <ResizablePanel defaultSize={32} minSize={22} className="flex flex-col bg-card">
               <Tabs defaultValue="output" className="flex-1 flex flex-col">
-                <TabsList className="w-full justify-start rounded-none border-b border-border bg-transparent h-11 px-1 shrink-0 flex-wrap">
+                <ScrollArea
+                className="w-full"
+                >
+                <TabsList className="w-full justify-start rounded-none border-b border-border bg-transparent h-11 px-1 shrink-0 ">
                   <TabsTrigger value="output" className="data-[state=active]:bg-mongo/10 data-[state=active]:text-mongo rounded-lg px-2.5 gap-1 text-xs">
                     <Code2 className="w-3.5 h-3.5" />
                     Pipeline
@@ -466,7 +469,8 @@ function MongoQueryBuilderContent() {
                     Reference
                   </TabsTrigger>
                 </TabsList>
-
+                <ScrollBar orientation="horizontal" className="bottom-0 h-0.5 w-0.5" />
+                 </ScrollArea>
                 <TabsContent value="output" className="flex-1 m-0 overflow-hidden">
                   <PipelineOutputPanel pipeline={generatedPipeline} />
                 </TabsContent>

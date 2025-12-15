@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
-  Calculator, ArrowDownUp, Filter, Trash2, Tag, ChevronRight,
-  ArrowUp, ArrowDown, X, Sigma, Code
+   ArrowDownUp, Filter, Trash2, Tag, ChevronRight,
+  ArrowUp, ArrowDown, X, Sigma
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { 
@@ -99,7 +99,7 @@ export default function FieldContextMenu({
           </div>
         </div>
 
-        <ScrollArea className="max-h-[450px]">
+        <ScrollArea className="max-h-112.5">
           {submenu === 'none' && (
             <div className="p-1.5">
               {/* Accumulator */}

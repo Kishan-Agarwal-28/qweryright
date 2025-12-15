@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { 
   Calculator, ArrowDownUp, Filter, Trash2, Tag, ChevronRight,
-  ArrowUp, ArrowDown, X, Sigma
-} from 'lucide-react';
+  ArrowUp, ArrowDown, X} from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { 
-  ColumnRef, SortDirection,
+  ColumnRef, 
   FILTER_OPERATORS, AGGREGATE_FUNCTIONS, generateId
 } from '@/lib/mongo-query-engine';
 import { Input } from "@/components/ui/input";
@@ -28,7 +27,7 @@ interface ContextMenuProps {
 type Submenu = 'none' | 'aggregate' | 'sort' | 'filter' | 'having' | 'expression';
 
 export default function ColumnContextMenu({
-  x, y, table, column, columnType, currentState, onUpdate, onRemove, onClose
+  x, y, table, column, currentState, onUpdate, onRemove, onClose
 }: ContextMenuProps) {
   const [submenu, setSubmenu] = useState<Submenu>('none');
   const [filterOperator, setFilterOperator] = useState<string>(currentState?.filter?.operator || '=');
@@ -71,7 +70,7 @@ export default function ColumnContextMenu({
           </div>
         </div>
 
-        <ScrollArea className="max-h-[400px]">
+        <ScrollArea className="max-h-100">
           {submenu === 'none' && (
             <div className="p-1.5">
               <button

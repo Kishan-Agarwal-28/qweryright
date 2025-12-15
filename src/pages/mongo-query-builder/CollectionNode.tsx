@@ -181,7 +181,7 @@ export default memo(function CollectionNode({ data }: NodeProps<CollectionNodeDa
                     : "border-muted-foreground/30 group-hover:border-muted-foreground/60"
                 )}>
                   {isSelected && (
-                    <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 12 12">
+                    <svg className="w-2.5 h-2.5 text-primary" fill="currentColor" viewBox="0 0 12 12">
                       <path d="M10.28 2.28L4 8.56 1.72 6.28a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l7-7a.75.75 0 00-1.06-1.06z"/>
                     </svg>
                   )}

@@ -58,7 +58,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html className={theme} lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
-
+<script
+      crossOrigin="anonymous"
+      src="//unpkg.com/react-scan/dist/auto.global.js"
+    />
       </head>
       <body>
         <Header />

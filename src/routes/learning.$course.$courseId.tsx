@@ -1,5 +1,15 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { courseStructure, findLessonBySlug } from '@/lib/course-structure';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { courseStructure, findLessonBySlug, getAdjacentLesson } from '@/lib/course-structure';
+
+type SavedHighlight = {
+  id: string;
+  courseId: string; // e.g., 'mod_1_1'
+  containerSelector: string; // e.g., "p:nth-child(3)" - to identify the specific paragraph
+  startOffset: number;
+  endOffset: number;
+  text: string; // For verification
+  color: string;
+}
 
 export const Route = createFileRoute('/learning/$course/$courseId')({
   beforeLoad: ({ params }) => {
@@ -22,12 +32,20 @@ export const Route = createFileRoute('/learning/$course/$courseId')({
     }
   },
   component: RouteComponent,
+  loader:({params})=>{
+    let prev=getAdjacentLesson(params.course,params.courseId,'prev');
+    let next=getAdjacentLesson(params.course,params.courseId,'next');
+    const savedHighlights : SavedHighlight[] = [
+       // Empty initially, or populate from DB
+    ]
+    return {props:{prev,next,savedHighlights}}
+  }
 })
 
 import { useRef } from 'react';
 import { CourseSidebar } from '@/components/course-sidebar';
 import { mdxComponents } from '@/components/mdx-components';
-import { useNavigate } from '@tanstack/react-router';
+
 
 
 // Direct imports for all SQL MDX files for SSR
@@ -112,6 +130,9 @@ import mongoMod7_4 from '../course_content/mongodb/module_7/mod_7_4.mdx';
 import mongoMod7_5 from '../course_content/mongodb/module_7/mod_7_5.mdx';
 import BottomDock from '@/components/bottom-dock';
 import { PageHeader } from '@/components/article-header';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+
 
 const sqlMdxModules = {
   'module_1/mod_1_1.mdx': sqlMod1_1,
@@ -195,10 +216,11 @@ const mongodbMdxModules = {
   'module_7/mod_7_4.mdx': mongoMod7_4,
   'module_7/mod_7_5.mdx': mongoMod7_5,
 } as const;
-
+import { TextHighlighter } from '@/components/text-highlighter';
 export default function RouteComponent() {
 
   const { course: courseType, courseId } = Route.useParams();
+  const { prev, next ,savedHighlights } = Route.useLoaderData().props;
   
   // Ref to track the content for reading time calculation
   const contentRef = useRef<HTMLDivElement>(null); 
@@ -211,7 +233,23 @@ export default function RouteComponent() {
 
   const mdxModule = currentLesson ? mdxModules[currentLesson.file as keyof typeof mdxModules] : null;
   const MdxContent = mdxModule;
+const handleSaveHighlight = async (highlightData: any) => {
+    // This runs on the client when user clicks "Highlight"
+    console.log("Saving to DB:", highlightData);
 
+    // Call your API route here
+    // await fetch('/api/highlights', { method: 'POST', body: JSON.stringify({...highlightData, courseId}) });
+    
+    return "new-id-from-db";
+  };
+  const handleDeleteHighlight = async (id: string) => {
+    // This runs on the client when user clicks "Delete"
+    console.log("Deleting from DB:", id);
+
+    // Call your API route here
+    // await fetch('/api/highlights', { method: 'DELETE', body: JSON.stringify({id, courseId}) });
+    
+  };
  return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
@@ -234,11 +272,79 @@ export default function RouteComponent() {
           
           {/* Article Content */}
           <article ref={contentRef} className="prose dark:prose-invert max-w-none">
+            <TextHighlighter 
+              savedHighlights={savedHighlights as any} 
+              onSaveHighlight={handleSaveHighlight}
+              onDeleteHighlight={handleDeleteHighlight}
+            >
             {MdxContent ? (
               <MdxContent components={mdxComponents} />
             ) : null}
+            </TextHighlighter>
           </article>
-
+          <div className=' w-full p-8  flex gap-8 items-center-safe justify-between'>
+          {
+            prev?.slug&&
+            (
+                <Link
+            to="/learning/$course/$courseId"
+            params={
+              {
+                course:courseType,
+                courseId:prev?.slug,
+              }
+            }
+            className='w-full'
+            >
+          <Button
+          className='w-full cursor-pointer  p-10 border-2 rounded-xl border-border'
+          variant='ghost'
+          >
+            <ArrowLeft/>
+            Previous Chapter
+              <img
+            src={`${prev?.content_url}`}
+            alt={prev?.title}
+            loading='lazy'
+            crossOrigin='anonymous'
+            className='object-cover h-15 rounded-md mx-2'
+            />
+          </Button>
+          
+            </Link>
+            )
+          }
+          {
+            next?.slug&&
+            (
+              <Link
+          to="/learning/$course/$courseId"
+          params={
+            {
+              course:courseType,
+              courseId:next?.slug,
+            }
+          }
+          className='w-full'
+          >
+          <Button
+          className='w-full  cursor-pointer p-10 border-2 rounded-xl border-border'
+          variant='ghost'
+          >
+              <img
+            src={`${next?.content_url}`}
+            alt={next?.title}
+            loading='lazy'
+            crossOrigin='anonymous'
+            className='object-cover h-15 rounded-md mx-2'
+            />
+            Next Chapter
+            <ArrowRight/>
+          </Button>
+            </Link>
+            )
+          }
+          </div>
         </div>
 
         <BottomDock containerId="course-content-scroll-area" />

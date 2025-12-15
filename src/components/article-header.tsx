@@ -25,7 +25,10 @@ import {
 import { ShareContent } from "@/components/bottom-dock";
 import { Bookmark, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
+dayjs.extend(relativeTime);
 // --- Configuration for Default Routes ---
 const SQL_DEFAULT_PATH = "/learning/sql/introduction-to-databases";
 const MONGODB_DEFAULT_PATH = "/learning/mongodb/what-are-aggregation-pipelines";
@@ -64,16 +67,6 @@ export function PageHeader({ contentRef, className }: PageHeaderProps) {
       // Remove trailing slash for consistent matching
       if (targetPath.endsWith('/') && targetPath.length > 1) {
         targetPath = targetPath.slice(0, -1);
-      }
-
-      // --- Redirection Logic for Editor Mode ---
-      if (targetPath === '/learning/sql') {
-        targetPath = SQL_DEFAULT_PATH;
-      } else if (targetPath === '/learning/mongodb') {
-        targetPath = MONGODB_DEFAULT_PATH;
-      } else if (targetPath === '/learning') {
-         // Default to SQL if they just type /learning
-         targetPath = SQL_DEFAULT_PATH;
       }
 
       navigate({ to: targetPath });
@@ -193,16 +186,18 @@ export function PageHeader({ contentRef, className }: PageHeaderProps) {
         {/* Left: Author & Stats */}
         <div className="flex items-center gap-4">
           <Avatar className="h-10 w-10 border">
-            <AvatarImage src="/path-to-your-image.jpg" alt="Author" />
-            <AvatarFallback>YE</AvatarFallback>
+            <AvatarImage src="//ui-avatars.com/api/?name=QRight&background=222244&rounded=true&format=png&size=128&color=ffffff" alt="Author" 
+            crossOrigin="anonymous"
+            />
+            <AvatarFallback>QR</AvatarFallback>
           </Avatar>
           
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-semibold text-foreground">Yasya El Hakim</span>
+            <span className="text-sm font-semibold text-foreground">QueryRight</span>
             <div className="flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
-              <span>3 Year(s) ago</span>
+              <span>{dayjs("2025-12-25").fromNow()}</span>
               <span className="hidden sm:inline text-muted-foreground/50">—</span>
-              <span>November 01, 2024</span>
+              <span>December 25, 2025</span>
               <span className="text-muted-foreground/50">•</span>
               <span className="font-medium text-foreground">{readingTime} min read</span>
             </div>

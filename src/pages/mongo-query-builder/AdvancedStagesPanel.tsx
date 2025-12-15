@@ -17,6 +17,7 @@ import {
   ARITHMETIC_OPERATORS,
   STRING_OPERATORS
 } from '@/lib/mongo-query-engine';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface AdvancedStagesPanelProps {
   stages: CustomStages;
@@ -165,7 +166,8 @@ export default function AdvancedStagesPanel({ stages, onChange, availableFields 
   const totalStages = (stages.group?.length || 0) + (stages.sort?.length || 0) + (stages.computed?.length || 0);
 
   return (
-    <div className="space-y-4">
+<ScrollArea className='h-screen'>
+      <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -566,5 +568,6 @@ export default function AdvancedStagesPanel({ stages, onChange, availableFields 
         </div>
       </Collapsible>
     </div>
+</ScrollArea>
   );
 }

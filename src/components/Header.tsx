@@ -55,9 +55,11 @@ const getGithubStars = useQuery({
   }, []);
   return (
    <nav className="flex items-center-safe justify-around z-50 sticky top-0  bg-background w-screen h-max border-b-2 p-2 border-primary/5 ">
+   <Link to="/">
     <Image
     src="/logo-full.png" alt="Logo" width={150} height={100}
      />
+   </Link>
 
       <NavigationMenu viewport={false}>
       <NavigationMenuList className="flex-wrap items-center justify-around ">
@@ -95,13 +97,17 @@ const getGithubStars = useQuery({
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link to=".">Query Optimizer</Link>
+            <Link to="/query-optimizer">Query Optimizer</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link to="/query-builder">Query Builder</Link>
-          </NavigationMenuLink>
+       <NavigationMenuItem>
+          <NavigationMenuTrigger>QueryBuilder</NavigationMenuTrigger>
+          <NavigationMenuContent>
+           <NavigationContent 
+           mongoRoute="/mongo/query-builder"
+           sqlRoute="/sql/query-builder"
+           />
+          </NavigationMenuContent>
         </NavigationMenuItem>
                 <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
@@ -147,7 +153,7 @@ function NavigationContent(
   }
 ) {
   return (
-     <ul className="grid gap-3 p-4 sm:w-[400px] md:w-[450px] lg:w-[500px] grid-cols-1 sm:grid-cols-2">
+     <ul className="grid gap-3 p-4 sm:w-100 md:w-112.5 lg:w-125 grid-cols-1 sm:grid-cols-2">
               <li>
                 <NavigationMenuLink asChild>
                   <motion.div
@@ -156,7 +162,7 @@ function NavigationContent(
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
                     <Link
-                      className="group from-muted/50 to-muted flex h-[220px] w-full flex-col justify-center items-center gap-4 rounded-md bg-linear-to-b p-6 no-underline outline-hidden transition-all duration-300 select-none focus:shadow-md hover:bg-[#00ED64] hover:shadow-lg"
+                      className="group from-muted/50 to-muted flex h-55 w-full flex-col justify-center items-center gap-4 rounded-md bg-linear-to-b p-6 no-underline outline-hidden transition-all duration-300 select-none focus:shadow-md hover:bg-[#00ED64] hover:shadow-lg"
                       to={mongoRoute}
                     >
                       <motion.div
@@ -164,9 +170,9 @@ function NavigationContent(
                         transition={{ duration: 0.5 }}
                         className="text-[100px]"
                       >
-                        <SiMongodb className="text-[#00ED64] group-hover:text-white transition-colors duration-300 w-[100px] h-[100px]" style={{ fontSize: '100px', width: '100px', height: '100px' }} />
+                        <SiMongodb className="text-[#00ED64] dark:group-hover:text-white  group-hover:text-zinc-800 transition-colors duration-300 w-25 h-25" style={{ fontSize: '100px', width: '100px', height: '100px' }} />
                       </motion.div>
-                      <p className="text-muted-foreground group-hover:text-white text-sm leading-tight text-center font-medium transition-colors duration-300">
+                      <p className="text-muted-foreground dark:group-hover:text-white group-hover:text-zinc-500 text-sm leading-tight text-center font-medium transition-colors duration-300">
                         Learn MongoDB aggregation pipelines
                       </p>
                     </Link>
@@ -181,7 +187,7 @@ function NavigationContent(
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
                     <Link
-                      className="group from-muted/50 to-muted flex h-[220px] w-full flex-col justify-center items-center gap-4 rounded-md bg-linear-to-b p-6 no-underline outline-hidden transition-all duration-300 select-none focus:shadow-md hover:bg-[#336791] hover:shadow-lg"
+                      className="group from-muted/50 to-muted flex h-55 w-full flex-col justify-center items-center gap-4 rounded-md bg-linear-to-b p-6 no-underline outline-hidden transition-all duration-300 select-none focus:shadow-md hover:bg-[#336791] hover:shadow-lg"
                       to={sqlRoute}
                     >
                       <motion.div
@@ -189,9 +195,9 @@ function NavigationContent(
                         transition={{ duration: 0.5 }}
                         className="text-[100px]"
                       >
-                        <SiPostgresql className="text-[#336791] group-hover:text-white transition-colors duration-300 w-[100px] h-[100px]" style={{ fontSize: '100px', width: '100px', height: '100px' }} />
+                        <SiPostgresql className="text-[#336791] dark:group-hover:text-white group-hover:text-zinc-800 transition-colors duration-300 w-25 h-25" style={{ fontSize: '100px', width: '100px', height: '100px' }} />
                       </motion.div>
-                      <p className="text-muted-foreground group-hover:text-white text-sm leading-tight text-center font-medium transition-colors duration-300">
+                      <p className="text-muted-foreground dark:group-hover:text-white group-hover:text-zinc-500 text-sm leading-tight text-center font-medium transition-colors duration-300">
                         Learn SQL queries
                       </p>
                     </Link>
