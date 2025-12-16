@@ -1,6 +1,6 @@
 import Editor, { type OnMount } from '@monaco-editor/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { editor } from 'monaco-editor';
+import type { editor, languages } from 'monaco-editor';
 import { useIsMounted } from '@/hooks/use-mounted';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -18,8 +18,9 @@ import {
   executeFindJSON,
   executeAggregateJSON,
   listCollections,
-} from '@/lib/zango';
+} from '@/lib/mingo';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { mongoSuggestions } from '@/lib/mongo-suggestions';
 
 type Mode = 'find' | 'aggregate';
 
@@ -64,9 +65,62 @@ export default function MongoEditor() {
       wordWrap: 'on',
       formatOnPaste: true,
       formatOnType: true,
+       suggestOnTriggerCharacters: true,
+      acceptSuggestionOnCommitCharacter: true,
+      acceptSuggestionOnEnter: 'on',
+      quickSuggestions: {
+        other: true,
+        comments: false,
+        strings: true,
+      },
+      suggest: {
+        showKeywords: true,
+        showSnippets: true,
+        showWords: true,
+      },
     });
     // Shortcut
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => handleExecute());
+    
+    // Register MongoDB suggestions
+    const disposable = monaco.languages.registerCompletionItemProvider('json', {
+      triggerCharacters: ['$'],
+      provideCompletionItems: (model, position) => {
+        const lineContent = model.getLineContent(position.lineNumber);
+        const textBeforeCursor = lineContent.substring(0, position.column - 1);
+        
+        // Find the start of the current word (including $ sign)
+        const match = textBeforeCursor.match(/(\$[a-zA-Z0-9_]*)$/);
+        const wordStart = match ? textBeforeCursor.length - match[1].length : position.column - 1;
+        const prefix = match ? match[1].toLowerCase() : '';
+        
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: wordStart + 1,
+          endColumn: position.column,
+        };
+        
+        // Filter suggestions based on what user has typed
+        const filtered = prefix 
+          ? mongoSuggestions.filter(sug => sug.label.toLowerCase().startsWith(prefix))
+          : mongoSuggestions;
+        
+        const suggestions: languages.CompletionItem[] = filtered.map((sug) => ({
+          label: sug.label,
+          kind: sug.kind,
+          insertText: sug.insertText,
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          documentation: { value: sug.documentation },
+          detail: sug.detail,
+          range: range,
+          sortText: sug.label,
+        }));
+        return { suggestions };
+      },
+    });
+    
+    return () => disposable?.dispose();
   };
 
   const refreshCollectionsAndSchema = async () => {
@@ -181,7 +235,7 @@ export default function MongoEditor() {
         <div className="max-w-4xl w-full">
           <div className="text-center mb-8">
             <Database className="w-16 h-16 mx-auto mb-4 text-primary" />
-            <h2 className="text-2xl font-bold mb-2">Welcome to MongoDB Editor (ZangoDB)</h2>
+            <h2 className="text-2xl font-bold mb-2">Welcome to MongoDB Editor</h2>
             <p className="text-muted-foreground">Choose a data source to get started</p>
           </div>
           <MongoDataLoader onLoadDefault={handleLoadDefault} onLoadCustom={handleLoadCustom} isLoading={false} />
@@ -310,6 +364,7 @@ export default function MongoEditor() {
                 defaultValue={defaultText}
                 theme={editorTheme}
                 onMount={handleEditorDidMount}
+                
               />
             </ResizablePanel>
 
