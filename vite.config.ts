@@ -9,6 +9,7 @@ import type { Plugin } from 'vite'
 import mdx from '@mdx-js/rollup'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
+
 // Custom plugin to add COOP/COEP headers for OPFS support
 const coopCoepPlugin = (): Plugin => ({
   name: 'coop-coep-headers',

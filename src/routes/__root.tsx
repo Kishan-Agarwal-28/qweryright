@@ -62,6 +62,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       crossOrigin="anonymous"
       src="//unpkg.com/react-scan/dist/auto.global.js"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.min.js"></script>
+    <script src="https://unpkg.com/zangodb@latest/dist/zangodb.min.js"></script>
       </head>
       <body>
         <Header />

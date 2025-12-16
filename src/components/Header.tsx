@@ -81,7 +81,7 @@ const getGithubStars = useQuery({
           <NavigationMenuTrigger>Editor</NavigationMenuTrigger>
           <NavigationMenuContent>
            <NavigationContent
-           mongoRoute="."
+           mongoRoute="/mongo-editor"
            sqlRoute="/editor"
            />
           </NavigationMenuContent>

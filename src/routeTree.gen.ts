@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TypesGeneratorRouteImport } from './routes/types-generator'
 import { Route as QueryTyperRouteImport } from './routes/query-typer'
 import { Route as QueryOptimizerRouteImport } from './routes/query-optimizer'
+import { Route as MongoEditorRouteImport } from './routes/mongo-editor'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LearningIndexRouteImport } from './routes/learning.index'
@@ -32,6 +33,11 @@ const QueryTyperRoute = QueryTyperRouteImport.update({
 const QueryOptimizerRoute = QueryOptimizerRouteImport.update({
   id: '/query-optimizer',
   path: '/query-optimizer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MongoEditorRoute = MongoEditorRouteImport.update({
+  id: '/mongo-editor',
+  path: '/mongo-editor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EditorRoute = EditorRouteImport.update({
@@ -68,6 +74,7 @@ const LearningCourseCourseIdRoute = LearningCourseCourseIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/mongo-editor': typeof MongoEditorRoute
   '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/mongo-editor': typeof MongoEditorRoute
   '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/editor': typeof EditorRoute
+  '/mongo-editor': typeof MongoEditorRoute
   '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/editor'
+    | '/mongo-editor'
     | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/editor'
+    | '/mongo-editor'
     | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/editor'
+    | '/mongo-editor'
     | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EditorRoute: typeof EditorRoute
+  MongoEditorRoute: typeof MongoEditorRoute
   QueryOptimizerRoute: typeof QueryOptimizerRoute
   QueryTyperRoute: typeof QueryTyperRoute
   TypesGeneratorRoute: typeof TypesGeneratorRoute
@@ -168,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/query-optimizer'
       fullPath: '/query-optimizer'
       preLoaderRoute: typeof QueryOptimizerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mongo-editor': {
+      id: '/mongo-editor'
+      path: '/mongo-editor'
+      fullPath: '/mongo-editor'
+      preLoaderRoute: typeof MongoEditorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/editor': {
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EditorRoute: EditorRoute,
+  MongoEditorRoute: MongoEditorRoute,
   QueryOptimizerRoute: QueryOptimizerRoute,
   QueryTyperRoute: QueryTyperRoute,
   TypesGeneratorRoute: TypesGeneratorRoute,
