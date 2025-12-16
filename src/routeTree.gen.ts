@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TypesGeneratorRouteImport } from './routes/types-generator'
 import { Route as QueryTyperRouteImport } from './routes/query-typer'
 import { Route as QueryOptimizerRouteImport } from './routes/query-optimizer'
+import { Route as EditorRouteImport } from './routes/editor'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LearningIndexRouteImport } from './routes/learning.index'
 import { Route as EditorQueryBuilderRouteImport } from './routes/$editor.query-builder'
@@ -31,6 +32,11 @@ const QueryTyperRoute = QueryTyperRouteImport.update({
 const QueryOptimizerRoute = QueryOptimizerRouteImport.update({
   id: '/query-optimizer',
   path: '/query-optimizer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditorRoute = EditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,6 +67,7 @@ const LearningCourseCourseIdRoute = LearningCourseCourseIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/editor': typeof EditorRoute
   '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/editor': typeof EditorRoute
   '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/editor': typeof EditorRoute
   '/query-optimizer': typeof QueryOptimizerRoute
   '/query-typer': typeof QueryTyperRoute
   '/types-generator': typeof TypesGeneratorRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/editor'
     | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/editor'
     | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/editor'
     | '/query-optimizer'
     | '/query-typer'
     | '/types-generator'
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EditorRoute: typeof EditorRoute
   QueryOptimizerRoute: typeof QueryOptimizerRoute
   QueryTyperRoute: typeof QueryTyperRoute
   TypesGeneratorRoute: typeof TypesGeneratorRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/query-optimizer'
       fullPath: '/query-optimizer'
       preLoaderRoute: typeof QueryOptimizerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/editor': {
+      id: '/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof EditorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -197,6 +217,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EditorRoute: EditorRoute,
   QueryOptimizerRoute: QueryOptimizerRoute,
   QueryTyperRoute: QueryTyperRoute,
   TypesGeneratorRoute: TypesGeneratorRoute,

@@ -18,6 +18,15 @@ async function initDB() {
       throw error;
     }
     
+    // Database is now initialized but empty
+    // User will load data through the UI
+    console.log('PGlite database initialized successfully');
+  }
+  return db;
+}
+
+// Keep the old auto-initialization code commented out for reference
+/*
     // Check if database is already initialized
     const tablesExist = await db.query(`
       SELECT EXISTS (
@@ -244,9 +253,7 @@ async function initDB() {
         CREATE INDEX idx_reviews_customer ON reviews(customer_id);
       `);
     }
-  }
-  return db;
-}
+*/
 
 // Handle messages from the main thread
 self.onmessage = async (event: MessageEvent) => {
@@ -256,7 +263,9 @@ self.onmessage = async (event: MessageEvent) => {
     const database = await initDB();
 
     if (type === 'query') {
+      console.log('[Worker] Executing query:', sql);
       const result = await database.query(sql);
+      console.log('[Worker] Query result rows:', result.rows.length, result.rows);
       self.postMessage({
         id,
         success: true,
@@ -264,6 +273,16 @@ self.onmessage = async (event: MessageEvent) => {
         fields: result.fields,
       });
     } else if (type === 'exec') {
+      console.log('[Worker] Executing exec:', sql.substring(0, 100));
+      await database.exec(sql);
+      self.postMessage({
+        id,
+        success: true,
+        data: [],
+      });
+    } else if (type === 'batch') {
+      // Execute entire SQL script as batch (for loading data files)
+      console.log('[Worker] Executing batch SQL');
       await database.exec(sql);
       self.postMessage({
         id,
@@ -272,6 +291,7 @@ self.onmessage = async (event: MessageEvent) => {
       });
     }
   } catch (error) {
+    console.error('[Worker] Error:', error);
     self.postMessage({
       id,
       success: false,

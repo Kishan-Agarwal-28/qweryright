@@ -4,25 +4,25 @@
 -- This database contains sample data for practicing SQL queries
 -- Includes: Authors, Books, Customers, Orders, Order Items, Reviews, Categories
 
--- Drop existing tables if they exist
-DROP TABLE IF EXISTS order_items;
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS reviews;
-DROP TABLE IF EXISTS books;
-DROP TABLE IF EXISTS authors;
-DROP TABLE IF EXISTS customers;
-DROP TABLE IF EXISTS categories;
+-- Drop existing tables if they exist (in reverse dependency order)
+DROP TABLE IF EXISTS order_items CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS books CASCADE;
+DROP TABLE IF EXISTS authors CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
 
 -- ============================================
 -- Table: authors
 -- ============================================
 CREATE TABLE authors (
-    author_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author_id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     birth_year INTEGER,
     country TEXT,
     biography TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO authors (name, birth_year, country, biography) VALUES
@@ -41,7 +41,7 @@ INSERT INTO authors (name, birth_year, country, biography) VALUES
 -- Table: categories
 -- ============================================
 CREATE TABLE categories (
-    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_id SERIAL PRIMARY KEY,
     category_name TEXT NOT NULL UNIQUE,
     description TEXT
 );
@@ -59,7 +59,7 @@ INSERT INTO categories (category_name, description) VALUES
 -- Table: books
 -- ============================================
 CREATE TABLE books (
-    book_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    book_id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     author_id INTEGER NOT NULL,
     category_id INTEGER,
@@ -70,7 +70,7 @@ CREATE TABLE books (
     publisher TEXT,
     pages INTEGER,
     language TEXT DEFAULT 'English',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES authors(author_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
@@ -103,7 +103,7 @@ INSERT INTO books (title, author_id, category_id, isbn, price, stock_quantity, p
 -- Table: customers
 -- ============================================
 CREATE TABLE customers (
-    customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_id SERIAL PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE customers (
     state TEXT,
     country TEXT DEFAULT 'United States',
     postal_code TEXT,
-    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     loyalty_points INTEGER DEFAULT 0
 );
 
@@ -138,10 +138,10 @@ INSERT INTO customers (first_name, last_name, email, phone, address, city, state
 -- Table: orders
 -- ============================================
 CREATE TABLE orders (
-    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id SERIAL PRIMARY KEY,
     customer_id INTEGER NOT NULL,
-    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    ship_date DATETIME,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ship_date TIMESTAMP,
     total_amount DECIMAL(10, 2) NOT NULL,
     status TEXT CHECK(status IN ('Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled')) DEFAULT 'Pending',
     payment_method TEXT,
@@ -175,7 +175,7 @@ INSERT INTO orders (customer_id, order_date, ship_date, total_amount, status, pa
 -- Table: order_items
 -- ============================================
 CREATE TABLE order_items (
-    order_item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_item_id SERIAL PRIMARY KEY,
     order_id INTEGER NOT NULL,
     book_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL DEFAULT 1,
@@ -242,12 +242,12 @@ INSERT INTO order_items (order_id, book_id, quantity, price_at_purchase) VALUES
 -- Table: reviews
 -- ============================================
 CREATE TABLE reviews (
-    review_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    review_id SERIAL PRIMARY KEY,
     book_id INTEGER NOT NULL,
     customer_id INTEGER NOT NULL,
     rating INTEGER CHECK(rating >= 1 AND rating <= 5) NOT NULL,
     review_text TEXT,
-    review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     helpful_count INTEGER DEFAULT 0,
     FOREIGN KEY (book_id) REFERENCES books(book_id),
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
@@ -269,11 +269,11 @@ INSERT INTO reviews (book_id, customer_id, rating, review_text, review_date, hel
 (9, 5, 5, 'Classic Christie mystery. The twist is incredible!', '2024-02-20 10:15:00', 34),
 (9, 13, 4, 'Well-crafted mystery with memorable characters.', '2024-05-18 13:30:00', 22),
 (13, 10, 5, 'Beautiful romance with sharp wit. Jane Austen is timeless.', '2024-04-08 14:50:00', 71),
-(13, 16, 5, 'My favorite book of all time. Elizabeth Bennet is iconic!', '2024-05-08 11:00:00', 58),
+(13, 12, 5, 'My favorite book of all time. Elizabeth Bennet is iconic!', '2024-05-08 11:00:00', 58),
 (21, 9, 5, 'The Great American Novel. Fitzgerald''s prose is stunning.', '2024-03-25 10:20:00', 92),
 (21, 1, 4, 'Beautiful writing, though the characters are flawed.', '2024-04-12 15:40:00', 47),
 (21, 11, 5, 'A tragic and beautiful story about the American Dream.', '2024-05-08 12:30:00', 63),
-(21, 17, 4, 'Excellent novel with gorgeous descriptions of the era.', '2024-05-12 16:10:00', 35),
+(21, 15, 4, 'Excellent novel with gorgeous descriptions of the era.', '2024-05-12 16:10:00', 35),
 (11, 6, 4, 'Fascinating sci-fi with brilliant ideas about society.', '2024-03-08 13:15:00', 29),
 (12, 9, 4, 'Thought-provoking collection of robot stories.', '2024-03-28 11:50:00', 26),
 (17, 10, 5, 'Short but powerful. Hemingway''s best work in my opinion.', '2024-04-10 09:40:00', 44),

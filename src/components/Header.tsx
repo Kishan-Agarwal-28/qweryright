@@ -82,7 +82,7 @@ const getGithubStars = useQuery({
           <NavigationMenuContent>
            <NavigationContent
            mongoRoute="."
-           sqlRoute="."
+           sqlRoute="/editor"
            />
           </NavigationMenuContent>
         </NavigationMenuItem>
