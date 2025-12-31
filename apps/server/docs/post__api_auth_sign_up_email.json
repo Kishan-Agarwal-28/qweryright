@@ -1,0 +1,164 @@
+{
+  "method": "POST",
+  "path": "/api/auth/sign-up/email",
+  "originalPath": "/api/auth/sign-up/email",
+  "query": {},
+  "params": {
+    "*": "sign-up/email"
+  },
+  "body": {
+    "type": "json",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "callbackURL": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
+        "password",
+        "username",
+        "name",
+        "image",
+        "callbackURL"
+      ]
+    },
+    "example": {
+      "email": "a@a.com",
+      "password": "12345678A@a",
+      "username": "test_123",
+      "name": "test",
+      "image": "https://ui-avatars.com/api/?name=test_123&background=random&color=fff",
+      "callbackURL": "/dashboard"
+    },
+    "signature": "callbackURL:string|email:string|image:string|name:string|password:string|username:string"
+  },
+  "customHeaders": {
+    "host": "localhost:4000",
+    "connection": "keep-alive",
+    "content-length": "187",
+    "pragma": "no-cache",
+    "cache-control": "no-cache",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "content-type": "application/json",
+    "sec-ch-ua-mobile": "?0",
+    "accept": "*/*",
+    "origin": "http://localhost:3000",
+    "sec-fetch-site": "same-site",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-dest": "empty",
+    "referer": "http://localhost:3000/",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "accept-language": "en-US,en;q=0.9",
+    "cookie": "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3ZjkyNjViOS02YzA2LTQxYWEtODRjNi0xZmZkNzA5OGFkOTciLCJpYXQiOjE3NjY4MjgzOTAsImV4cCI6MTc2NzQzMzE5MH0.sGIMFNEXaTdcKcYtGA072tGOyJdunis3tmDXhtpNAZU; theme=dark; adminer_key=356401b068af90abb99c32c83eecc3df; adminer_version=5.4.1; adminer_sid=0f58e224f21d53de11174afa82b9ee39"
+  },
+  "response": {
+    "statusCode": 200,
+    "headers": {
+      "access-control-allow-origin": "http://localhost:3000",
+      "access-control-allow-credentials": "true",
+      "access-control-expose-headers": "set-auth-token",
+      "content-type": "application/json; charset=utf-8",
+      "set-auth-token": "Ko2NbnDkJtl9AHjzWx8WoAAuuZvJ5W9v.zQRN9rkvDKVRJAp8DlX1U%2F5QrDWR2S0wOzFvScjjpc8%3D",
+      "set-cookie": [
+        "better-auth.session_token=Ko2NbnDkJtl9AHjzWx8WoAAuuZvJ5W9v.zQRN9rkvDKVRJAp8DlX1U%2F5QrDWR2S0wOzFvScjjpc8%3D; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax",
+        "better-auth.session_data=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoibTBjZHFuakd5RGViMlRqOVl0emNqLVZHcTZNcndhb2xQbklNcHYtVEppRSJ9..BxRjzXfrAPhTXAsphkXv6Q.87hvboACH9aT8pU6yqHn8CFU0sMo43YyZZVI11ruAb-zz3uNhl3zQahorBjqJM3kq2gGgSoAGiTmE1O8ArpwmdIa_1_buXLZxYxlG_S9zh4XCImny7YsD897dSKradHoGGeyfs19WLjoqNQg_YgcQXH99E9BDZsXEJSr4TdxhM2xNu9in2UV_LGebPh2DJib9c9lfn8c0592AyulcPOpRTXaPl4OhUva9t1Sz-QjxL5pUTpYMsda62cRqsul9wssWFcNtGRau-f9WqXxJ1KjZicK43tlMPfEHYjNOSzP4JP3pCcZzomVjox2LagWeXkEg471C7rlSjGHCvJjwgncNwblVqDW-WdUsh_U7rgKa8VveC3KO_RLDMGrFHL2FSDNrBygXqiUWXyoPxJrHKonS9BudVZNIXDWLcAE047olYJCsyQALd_0yphVa4Z0ZZ1H6UF2qxRhrFHyHGRJRTg5uty4l3hrGSHjgaNfwjqi6xyY6dMyrZc6y1BTEXiO1WpO3fgMnSwOB9ZQ1ZB9torQ_u77ET0rDqMyHiGwPN46sgLYctKf4pllyeYVldxdMZA_bWFnzQuC_DcBV8X0wUp_vZFMFA8EmZw7sJYIdqbs2FKlKIYJHXzf9dCeU1LrMK7NDOU0ZeehOrwtM4cWk4KVCVfKQyBTeLr31dHeyk8cl66sRtTL3GJcbEcEaJw4PyxB6GNwNkLdbOVpoPlBv2GzUL9rLE6p8mMjwcbl_V3f6iBwGqDnaoCFulWSdZm_qdKZj9BF9UHKdNaVJcEFIwgKhPtpUxcnrpD5pI4DGtRMH5wMss60y0oaug_GLGRXlzQMjyHb2hjqBsDDzy8zyUsG1LscIJNScfVG-s7AXUgOkg6GBpG2mk7y2tiZZAELSgUwm-niZPzItjEIN3nU_A860qzYcv5sbaY2BjXZTF4m_OPjLwTOinkxNAQpws1RD_lYfxQvdVBDECaX069S46OzFtDGITMpeyISIXHWbsiBK-h-QTa6DxSxryLCs_8Rw6ber3og76Hgha_gJaVwHf0XiGOwXJ9u3zhMkaV13e2g6csdg68wkXc6AhZSBOknovpf9nIcGymN9T6cAvmeMLyxozGDEkiQmnfTm7duXEUCP24.0qtu7ZQ8KX-Y3760IjweOy9e9tLbQbXUGB9WXAhUOqs; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax"
+      ]
+    },
+    "body": {
+      "type": "json",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "emailVerified": {
+                "type": "boolean",
+                "example": false
+              },
+              "image": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "username": {
+                "type": "string"
+              },
+              "displayUsername": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "email",
+              "emailVerified",
+              "image",
+              "createdAt",
+              "updatedAt",
+              "username",
+              "displayUsername",
+              "id"
+            ]
+          }
+        },
+        "required": ["token", "user"]
+      },
+      "example": {
+        "token": "Ko2NbnDkJtl9AHjzWx8WoAAuuZvJ5W9v",
+        "user": {
+          "name": "test",
+          "email": "a@a.com",
+          "emailVerified": false,
+          "image": "https://ui-avatars.com/api/?name=test_123&background=random&color=fff",
+          "createdAt": "2025-12-28T13:51:52.384Z",
+          "updatedAt": "2025-12-28T13:51:52.384Z",
+          "username": "test_123",
+          "displayUsername": "test_123",
+          "id": "E5FpTyBXlJiQfzgbFL6UA6gzh8Q4YxDs"
+        }
+      },
+      "signature": "token:string|user:object:createdAt:string|displayUsername:string|email:string|emailVerified:boolean|id:string|image:string|name:string|updatedAt:string|username:string"
+    }
+  },
+  "timestamp": "2025-12-28T13:51:52.429Z",
+  "lastUpdated": "2025-12-28T13:51:52.429Z"
+}

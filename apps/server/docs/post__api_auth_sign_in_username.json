@@ -1,0 +1,149 @@
+{
+  "method": "POST",
+  "path": "/api/auth/sign-in/username",
+  "originalPath": "/api/auth/sign-in/username",
+  "query": {},
+  "params": {
+    "*": "sign-in/username"
+  },
+  "body": {
+    "type": "json",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "rememberMe": {
+          "type": "boolean",
+          "example": true
+        },
+        "callbackURL": {
+          "type": "string"
+        }
+      },
+      "required": ["username", "password", "rememberMe", "callbackURL"]
+    },
+    "example": {
+      "username": "test_123",
+      "password": "12345678A@a",
+      "rememberMe": true,
+      "callbackURL": "/dashboard"
+    },
+    "signature": "callbackURL:string|password:string|rememberMe:boolean|username:string"
+  },
+  "customHeaders": {
+    "host": "localhost:4000",
+    "connection": "keep-alive",
+    "content-length": "93",
+    "pragma": "no-cache",
+    "cache-control": "no-cache",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "content-type": "application/json",
+    "sec-ch-ua-mobile": "?0",
+    "accept": "*/*",
+    "origin": "http://localhost:3000",
+    "sec-fetch-site": "same-site",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-dest": "empty",
+    "referer": "http://localhost:3000/",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "accept-language": "en-US,en;q=0.9",
+    "cookie": "theme=dark"
+  },
+  "response": {
+    "statusCode": 200,
+    "headers": {
+      "access-control-allow-origin": "http://localhost:3000",
+      "access-control-allow-credentials": "true",
+      "access-control-expose-headers": "set-auth-token",
+      "content-type": "application/json; charset=utf-8",
+      "set-auth-token": "x044Tnvh3xNqpeL2FPJUDoyFGQ5p4YnE.fWkbhUxC%2FkG0AVA9XNxO1%2FyuYlHwHc%2BtqE%2F7qMX%2FAoU%3D",
+      "set-cookie": [
+        "better-auth.session_token=x044Tnvh3xNqpeL2FPJUDoyFGQ5p4YnE.fWkbhUxC%2FkG0AVA9XNxO1%2FyuYlHwHc%2BtqE%2F7qMX%2FAoU%3D; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax",
+        "better-auth.session_data=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoibTBjZHFuakd5RGViMlRqOVl0emNqLVZHcTZNcndhb2xQbklNcHYtVEppRSJ9..A6F8-uTUyunsGN2KvjeMUA.0WGmlOQ8nIDkXKQc2E4V9_bDHUuZpVDifpl22TP6NZEJADwVFHlLAOAklTpJiWh0Yfn43djvOabGZls1ABMAbEXha_xEvxNygtuAaEHN-W1Mze3NcB8FR4rCp3egBUlySADEXEOhKxwOii_Ih-f5Q3v-8Nq9tQcP2VFXRKajh9JWZvGSDCDyZXWYShmpIzbLTOnp7oCVYuzhfVoxj8oyzEzfeNCidGGTCQ0XlTOVPOC7ixK8T6AGTd_zsekF00fNUnxGjnc2VMUymdJI2XQGRVEdQbUIaZLB0bR4dbfuTkM_aBFRfysChkNeFuRRI68YgGinRaqZon-XB3VScNmP0ZFnQCbdQUXFaP04Ptwe0N5yjBNu88TwJx5boxWwXxbrRPBamtz_iX2T9Eum1cvxNswS7mOCbMNhCT72Ag15o6qATLVhwn6NbBAhs4-VBjuEeDar3W3DZIAfnbdB6rOlKa36ea6QWIZEmZACN2Yaq_277eezvTLInATHNrVyCfTaBN_OS88SjLHrotAOm5Bzar59Aqy7prn2wJWw8jceKOr-b5IQ27Q6tM32CGfzTUGRNzW5iLIdlr7Wt_0liYXpzUqSqozVhN3UX7E-RovK_di8-V48RoD99Oxwy9GBmo7RhGBEY4TFPX4BQuXxFnfEJliUZe3EXp_yxS9jvqjIyay4RV6H4f4vsgpMzDRYQVlu8PF4AraA7vT0BqB7WgbJ2FtFuZy3p1bKQjK10_Nki7FTpXvJ1IPuuJcHOuSFaq2kpn4q0bolqUJKdrJ_Zv6xRKoG3Rrc0hfEQ8-e0-eAt1BMANNYOSGC0rYGsa8JxzdmzLCJ5URssrLApaFLvyjjggMVSAE37zuWao-si6ncDHS0QelfqqFlLJAdUe9AuEFVhVEQ8W4OmIvDjanw4xexg2-iZbnUK-4bT48b_l_xrWm1Uo_MuWLEGfxZeWxQki4JafV7oGCppXTNPX0QwW672EZJ7NDhd41EQBJ6iNtGqalt8hc4SFcXmQXkbyWSKP0ZWEiMGILrHmUf8VkC3Foq_8WxS28UcBO06y6tZ2sc6Fe-Ez3tePdMuZv2JRheu0JfNkBcagL-3aEBkIXCG0m9XaPdtE1Z0yG11pchFMirdiA.P0FdAVjVWlIl3Tf-_Jnh0tCy7Aq2iUjX_WQnoN7oQDM; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax"
+      ]
+    },
+    "body": {
+      "type": "json",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "emailVerified": {
+                "type": "boolean",
+                "example": false
+              },
+              "username": {
+                "type": "string"
+              },
+              "displayUsername": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "image": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "emailVerified",
+              "username",
+              "displayUsername",
+              "name",
+              "image",
+              "createdAt",
+              "updatedAt"
+            ]
+          }
+        },
+        "required": ["token", "user"]
+      },
+      "example": {
+        "token": "x044Tnvh3xNqpeL2FPJUDoyFGQ5p4YnE",
+        "user": {
+          "id": "E5FpTyBXlJiQfzgbFL6UA6gzh8Q4YxDs",
+          "email": "a@a.com",
+          "emailVerified": false,
+          "username": "test_123",
+          "displayUsername": "test_123",
+          "name": "test",
+          "image": "https://ui-avatars.com/api/?name=test_123&background=random&color=fff",
+          "createdAt": "2025-12-28T13:51:52.384Z",
+          "updatedAt": "2025-12-28T13:51:52.384Z"
+        }
+      },
+      "signature": "token:string|user:object:createdAt:string|displayUsername:string|email:string|emailVerified:boolean|id:string|image:string|name:string|updatedAt:string|username:string"
+    }
+  },
+  "timestamp": "2025-12-28T13:54:37.292Z",
+  "lastUpdated": "2025-12-28T13:54:37.292Z"
+}

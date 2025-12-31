@@ -1,0 +1,72 @@
+{
+  "method": "POST",
+  "path": "/api/auth/sign-out",
+  "originalPath": "/api/auth/sign-out",
+  "query": {},
+  "params": {
+    "*": "sign-out"
+  },
+  "body": {
+    "type": "json",
+    "schema": {
+      "type": "object",
+      "properties": {}
+    },
+    "example": {},
+    "signature": ""
+  },
+  "customHeaders": {
+    "host": "localhost:4000",
+    "connection": "keep-alive",
+    "content-length": "2",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "content-type": "application/json",
+    "sec-ch-ua-mobile": "?0",
+    "accept": "*/*",
+    "origin": "http://localhost:3000",
+    "sec-fetch-site": "same-site",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-dest": "empty",
+    "referer": "http://localhost:3000/",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "accept-language": "en-US,en;q=0.9",
+    "cookie": "theme=dark; better-auth.session_token=pu0ovZln3nWmRciwOndI799xjyaxrlNO.ZyeW7EJP%2Fzg8PeV1wY3BfkCLQlG2T7DUVILBooMG9lU%3D; better-auth.session_data=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoibTBjZHFuakd5RGViMlRqOVl0emNqLVZHcTZNcndhb2xQbklNcHYtVEppRSJ9..bdFghRT08Z3narcOMlHSIw.5b3lMcj5H542HG2ugoBWt9I3QVLfoAS4CjSjIRq2xM1UDkNvxFDCKNf1UpvAMxmuaLbTtO8Fka2oy_txeN3ML-TjvCD4Tlz1DXc2L5ZguRlkL1aFDiAcNpMV97K6tL0kOFHGBHIB7-pG7bOW2BvOlp8HoG7rbhNRqGTPR4RhQrVYhC5hRGRRoGo0bZIe9yxEJPZ7h1FG-DOZqZlcoV8Ch4-uPhYdiuqq3LYaFQWDnnSfqsAie-AbFarY3mrW7Wk1MWsb8W2D3Hmc_HE1lZ4qJDHzHoUw1qwvgM5-Z-aBXrk3EA7eOxUkLdNpdkC5FB_a2HCKBhfsaMKMK1-YotFQMHp7nSE1Rs5tEWbbjycImFur1Y_VLNqxk_RRFM2MjTG1WJU7ugUrbT5gIUhycsdxJYiof6CqJWrMhpF4xEXd8a817hYmHmkFjUxg2VomFQFrFyhaE1Mrp7C_Nu5F0psSxO-B-4_gHtRhAoMBGlU7NNoYQdHFKzAfOigCAZMuugG6pidC3foALAR2-2Ih0V39_1BUps8LRD4nwWSz68iQmxApxgoH4CsIxq3_qBeoVYKKclEs6hhCLiqlljtdy1vRUcHcctTw3pp-YLkQ8leD2uvsLCUWqIjR3nwqv2eu9v6DbZSGXp_CRHVCTbVnVwb2z0zm4fpvgLEeFeZGmGy3XNzzyR2-E9aPIFJjFj7f270aoq5rZK6_CVQgFqsCTeKHan-W3RIImVUh9xVFu6KEAVPiSNEChPS9_-NlrGwkMQOz5dFI5opFMMoHXwMs9evV03EOOP0R4pf2RlKHKD-qPfDA5H7bzt9UA0KQWQlP39b3c8L9sOitMOYytKDKkUQer5c143_ersQDRsBC1nvYr59vTIUuiemoxsAl25Kisev5IaK9lyS9P4JUwIIy3NrqL-5OcKAdCjvtOKemstazvU69XGGtwW3e83PJkcn0jFYXKgMjC0hIbRBQtk8vtNR0rbzbPIxmCdIFxxFtQR6lw3uOklYClV8AXaLKSeet8jkDs1UtQEa599_0pCsMVobE6TFvx-Fs-KjOzZOhY-oIJ45iOgJN5TCSQ4ycWmpGKbinGFRNRv1kLnftroMDTguNInFJ22v3LsBqtkk5yAl1kN0.AFDBEIjelnJnq9uo-8Zk3zdpIVwSyQTf9peuxjrlFBg"
+  },
+  "response": {
+    "statusCode": 200,
+    "headers": {
+      "access-control-allow-origin": "http://localhost:3000",
+      "access-control-allow-credentials": "true",
+      "content-type": "application/json; charset=utf-8",
+      "set-cookie": [
+        "better-auth.session_token=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax",
+        "better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax",
+        "better-auth.account_data=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax",
+        "better-auth.oauth_state=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax",
+        "better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax",
+        "better-auth.dont_remember=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax"
+      ]
+    },
+    "body": {
+      "type": "json",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": ["success"]
+      },
+      "example": {
+        "success": true
+      },
+      "signature": "success:boolean"
+    }
+  },
+  "timestamp": "2025-12-30T15:52:50.331Z",
+  "lastUpdated": "2025-12-30T15:52:50.331Z"
+}
