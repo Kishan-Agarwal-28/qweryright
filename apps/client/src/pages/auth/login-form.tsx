@@ -7,7 +7,7 @@ import { RiGithubLine, RiGoogleLine } from 'react-icons/ri'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Image } from '@unpic/react'
-import { Link, redirect } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { LoginSchema } from '@repo/schema'
 import type z from 'zod'
 import { authClient } from '@/lib/auth-client'
@@ -31,15 +31,19 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Checkbox } from '@/components/ui/checkbox'
 import { LoaderOne } from '@/components/ui/loader'
+import { useUserStore } from '@/store/user-store'
+import ForgotPasswordDialog from './forgot-password-form'
+import { env } from '@/env'
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
   const [isVisible, setIsVisible] = useState(false)
-
+  const userStore = useUserStore()
   const toggleVisibility = () => setIsVisible((prev) => !prev)
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
   const form = useForm({
     defaultValues: {
       username: '',
@@ -57,7 +61,6 @@ export function LoginForm({
             username: value.username,
             password: value.password,
             rememberMe: value.remember_me,
-            callbackURL: '/dashboard',
           },
           {
             onRequest: () => {
@@ -66,8 +69,15 @@ export function LoginForm({
             onError: () => {
               setLoading(false)
             },
-            onSuccess: () => {
+            onSuccess: (ctx) => {
               setLoading(false)
+              userStore.setUser(ctx.data.user)
+              navigate({
+                to: '/dashboard/$id',
+                params: {
+                  id: ctx.data.user.id,
+                },
+              })
             },
           },
         )
@@ -91,7 +101,6 @@ export function LoginForm({
             email: value.email,
             password: value.password,
             rememberMe: value.remember_me,
-            callbackURL: '/dashboard',
           },
           {
             onRequest: () => {
@@ -102,6 +111,14 @@ export function LoginForm({
             },
             onSuccess: (ctx) => {
               setLoading(false)
+              form.reset()
+              userStore.setUser(ctx.data.user)
+              navigate({
+                to: '/dashboard/$id',
+                params: {
+                  id: ctx.data.user.id,
+                },
+              })
             },
           },
         )
@@ -123,10 +140,10 @@ export function LoginForm({
   })
 
   const handleSocialLogin = async (provider: 'google' | 'github') => {
-    const { data, error } = await authClient.signIn.social(
+    const { error } = await authClient.signIn.social(
       {
         provider,
-        callbackURL: '/dashboard',
+        callbackURL: `${env.VITE_PUBLIC_URL}/auth/callback`,
       },
       {
         onRequest: () => {
@@ -164,10 +181,14 @@ export function LoginForm({
         onRequest() {
           setLoading(true)
         },
-        onSuccess() {
+        onSuccess(ctx) {
           setLoading(false)
-          redirect({
-            to: '/dashboard',
+          userStore.setUser(ctx.data.user)
+          navigate({
+            to: '/dashboard/$id',
+            params: {
+              id: ctx.data.user.id,
+            },
           })
         },
       },
@@ -283,12 +304,13 @@ export function LoginForm({
                             <FieldLabel htmlFor={field.name}>
                               Password
                             </FieldLabel>
-                            <a
-                              href="#"
-                              className="ml-auto text-sm underline-offset-2 hover:underline"
-                            >
-                              Forgot your password?
-                            </a>
+                            <ForgotPasswordDialog
+                              DialogTrigger={
+                                <span className="ml-auto text-sm underline-offset-2 hover:underline">
+                                  Forgot your password?
+                                </span>
+                              }
+                            />
                           </div>
                           <InputGroup>
                             <InputGroupInput

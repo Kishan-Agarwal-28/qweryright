@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -14,21 +11,41 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  username        String?
-  displayUsername String?
-  
+  id                          String               @id
+  name                        String
+  email                       String
+  emailVerified               Boolean              @default(false)
+  image                       String?
+  createdAt                   DateTime             @default(now())
+  updatedAt                   DateTime             @updatedAt
+  passwordChangeAllowed       DateTime?
+  emailChangeAllowed          DateTime?
+  passwordResetAllowed        DateTime?
+  username                    String?
+  displayUsername             String?
+  emailVerificationRetryCount Int                  @default(0)
+  lastVerificationEmailSentAt DateTime?
+  lastResetEmailSentAt        DateTime?
+  // Relations
+  sessions                    Session[]
+  accounts                    Account[]
+  // Relation to the new answer model
+  securityAnswers             UserSecurityAnswer[]
+  highlights                  Highlight[]
+  bookmarks                   Bookmark[]
+  socialProfiles              SocialProfile[]
+
+  twoFactorEnabled Boolean?    @default(false)
+  description      String?
+  age              Int?
+  gender           String?
+  location         String?     @default("unknown")
+  institution      String?     @default("unknown")
+  twofactors       TwoFactor[]
+
   @@unique([email])
-  @@map("user")
   @@unique([username])
+  @@map("user")
 }
 
 model Session {
@@ -51,7 +68,8 @@ model Account {
   id                    String    @id
   accountId             String
   providerId            String
-  userId                String
+  providerName          String    @default("user")
+  userId                String    
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
@@ -87,4 +105,80 @@ model Jwks {
   expiresAt  DateTime?
 
   @@map("jwks")
+}
+
+model SecurityQuestion {
+  id          String               @id
+  text        String
+  userAnswers UserSecurityAnswer[]
+
+  @@map("security_question")
+}
+
+model UserSecurityAnswer {
+  id        String   @id @default(cuid())
+  answer    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  questionId String
+  question   SecurityQuestion @relation(fields: [questionId], references: [id])
+
+  @@unique([userId, questionId])
+  @@index([userId])
+  @@map("user_security_answer")
+}
+
+model Highlight {
+  id        String   @id @default(cuid())
+  courseId  String
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+  @@index([userId])
+  @@map("highlight")
+}
+
+model Bookmark {
+  id       String @id @default(cuid())
+  courseId String
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+  @@index([userId])
+  @@map("bookmark")
+}
+
+model SocialProfile {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider  String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("social_profile")
+}
+
+model TwoFactor {
+  id          String @id
+  secret      String
+  backupCodes String
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([secret])
+  @@index([userId])
+  @@map("twoFactor")
 }

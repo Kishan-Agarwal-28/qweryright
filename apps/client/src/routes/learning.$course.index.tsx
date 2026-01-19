@@ -11,13 +11,31 @@ import { Image } from '@unpic/react'
 import type { LessonItem } from '@/lib/course-structure'
 import { courseStructure } from '@/lib/course-structure'
 
-type ValidCourse = 'sql' | 'mongodb'
+type ValidCourse =
+  | 'sql'
+  | 'mongodb'
+  | 'oramadb'
+  | 'neo4j'
+  | 'qdrant'
+  | 'duckdb'
+  | 'elasticsearch'
+  | 'redis'
 
 export const Route = createFileRoute('/learning/$course/')({
   component: CourseStructurePage,
   loader: ({ params }) => {
     const { course } = params
-    if (course !== 'sql' && course !== 'mongodb') {
+    const validCourses: ValidCourse[] = [
+      'sql',
+      'mongodb',
+      'oramadb',
+      'neo4j',
+      'qdrant',
+      'duckdb',
+      'elasticsearch',
+      'redis',
+    ]
+    if (!validCourses.includes(course as ValidCourse)) {
       throw notFound()
     }
   },
@@ -28,8 +46,19 @@ function CourseStructurePage() {
   const validCourse = course as ValidCourse
 
   const courseData = courseStructure[validCourse]
-  const courseTitle =
-    validCourse === 'sql' ? 'SQL Foundations' : 'MongoDB Aggregations'
+
+  const courseTitles: Record<ValidCourse, string> = {
+    sql: 'SQL Foundations',
+    mongodb: 'MongoDB Aggregations',
+    oramadb: 'OramaDB: Edge-Native Search',
+    neo4j: 'Neo4j: Graph Databases',
+    qdrant: 'Qdrant: Vector Search',
+    duckdb: 'DuckDB: OLAP Analytics',
+    elasticsearch: 'Elasticsearch: Distributed Search',
+    redis: 'Redis: In-Memory Database',
+  }
+
+  const courseTitle = courseTitles[validCourse]
 
   return (
     <div className="min-h-screen bg-background w-full flex flex-col items-center py-10 px-4 md:px-8">

@@ -9,19 +9,11 @@
   "customHeaders": {
     "host": "localhost:4000",
     "connection": "keep-alive",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
-    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
-    "sec-ch-ua-mobile": "?0",
     "accept": "*/*",
-    "origin": "http://localhost:3000",
-    "sec-fetch-site": "same-site",
+    "accept-language": "*",
     "sec-fetch-mode": "cors",
-    "sec-fetch-dest": "empty",
-    "referer": "http://localhost:3000/",
-    "accept-encoding": "gzip, deflate, br, zstd",
-    "accept-language": "en-US,en;q=0.9",
-    "cookie": "theme=dark"
+    "user-agent": "node",
+    "accept-encoding": "gzip, deflate"
   },
   "response": {
     "statusCode": 200,
@@ -40,6 +32,6 @@
       "signature": "primitive"
     }
   },
-  "timestamp": "2025-12-30T20:55:35.620Z",
-  "lastUpdated": "2025-12-30T20:55:35.620Z"
+  "timestamp": "2026-01-19T06:36:50.453Z",
+  "lastUpdated": "2026-01-19T06:36:50.454Z"
 }

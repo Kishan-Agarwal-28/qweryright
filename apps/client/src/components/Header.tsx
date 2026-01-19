@@ -174,7 +174,12 @@ export default function Header() {
           <Skeleton className="w-24 h-10 rounded-md" />
         ) : user ? (
           <>
-            <Link to="/dashboard">
+            <Link
+              to="/dashboard/$id"
+              params={{
+                id: user.id,
+              }}
+            >
               <Button className="bg-muted text-primary/95 cursor-pointer hover:bg-muted/50 rounded-md">
                 Dashboard
               </Button>

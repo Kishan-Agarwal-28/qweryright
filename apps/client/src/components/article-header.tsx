@@ -1,8 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useLocation, useNavigate } from '@tanstack/react-router'
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+} from '@tanstack/react-router'
 import { Bookmark, Share2 } from 'lucide-react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { useBookmark } from '@/hooks/use-bookmark'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -33,11 +39,24 @@ dayjs.extend(relativeTime)
 interface PageHeaderProps {
   contentRef: React.RefObject<HTMLDivElement>
   className?: string
+  initialIsBookmarked?: boolean
 }
 
-export function PageHeader({ contentRef, className }: PageHeaderProps) {
+export function PageHeader({
+  contentRef,
+  className,
+  initialIsBookmarked,
+}: PageHeaderProps) {
   const location = useLocation()
   const navigate = useNavigate()
+  const params = useParams({ strict: false })
+  const courseId = params.courseId as string
+
+  // Bookmark hook
+  const { isBookmarked, toggleBookmark, isLoading } = useBookmark(
+    courseId,
+    initialIsBookmarked,
+  )
 
   // --- Breadcrumb Logic ---
   const [isEditingPath, setIsEditingPath] = useState(false)
@@ -206,11 +225,20 @@ export function PageHeader({ contentRef, className }: PageHeaderProps) {
                   variant="ghost"
                   size="icon"
                   className="text-muted-foreground hover:text-foreground"
+                  onClick={toggleBookmark}
+                  disabled={isLoading}
                 >
-                  <Bookmark className="h-5 w-5" />
+                  <Bookmark
+                    className={cn(
+                      'h-5 w-5',
+                      isBookmarked && 'fill-current text-primary',
+                    )}
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Bookmark</TooltipContent>
+              <TooltipContent>
+                {isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+              </TooltipContent>
             </Tooltip>
 
             {/* Share */}

@@ -82,7 +82,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
             [&>div[data-icon]]:justify-center
             flex
             items-center
-            justify-around
+            justify-start
             data-[type=success]:!bg-emerald-50 data-[type=success]:!border-emerald-300 data-[type=success]:!text-emerald-900
             data-[type=error]:!bg-red-50 data-[type=error]:!border-red-300 data-[type=error]:!text-red-900
             data-[type=info]:!bg-blue-50 data-[type=info]:!border-blue-300 data-[type=info]:!text-blue-900

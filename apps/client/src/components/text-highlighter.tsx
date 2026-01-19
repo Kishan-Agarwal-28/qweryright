@@ -92,8 +92,11 @@ export function TextHighlighter({
     root: HTMLElement,
   ): Node | null => {
     let current: Node = root
-    for (const index of path) {
-      if (!current.childNodes[index]) return null
+    for (let i = 0; i < path.length; i++) {
+      const index = path[i]
+      if (!current.childNodes[index]) {
+        return null
+      }
       current = current.childNodes[index]
     }
     return current
@@ -153,10 +156,22 @@ export function TextHighlighter({
 
   const handleContainerClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement
+
+    // Check if clicked element is a mark or has a mark parent
+    let markElement: HTMLElement | null = null
     if (target.tagName === 'MARK' && target.dataset.highlightId) {
+      markElement = target
+    } else {
+      // Check if parent is a mark
+      markElement = target.closest(
+        'mark[data-highlight-id]',
+      ) as HTMLElement | null
+    }
+
+    if (markElement && markElement.dataset.highlightId) {
       e.stopPropagation()
-      const id = target.dataset.highlightId
-      const rect = target.getBoundingClientRect()
+      const id = markElement.dataset.highlightId
+      const rect = markElement.getBoundingClientRect()
       const rootRect = rootRef.current!.getBoundingClientRect()
 
       setActiveHighlightId(id)
@@ -230,9 +245,18 @@ export function TextHighlighter({
         newNode.style.backgroundColor = color
       }
 
-      range.surroundContents(newNode)
+      // Try simple surroundContents first
+      try {
+        range.surroundContents(newNode)
+        return
+      } catch (e) {
+        // If surroundContents fails, use extractContents approach for complex selections
+        const fragment = range.extractContents()
+        newNode.appendChild(fragment)
+        range.insertNode(newNode)
+      }
     } catch (e) {
-      console.warn('Complex selection unsupported', e)
+      console.warn('Failed to wrap highlight:', e)
     }
   }
 
@@ -242,42 +266,79 @@ export function TextHighlighter({
 
   // --- Hydration ---
   useEffect(() => {
-    if (!rootRef.current || savedHighlights.length === 0) return
+    if (savedHighlights.length === 0) {
+      return
+    }
 
-    savedHighlights.forEach((h) => {
-      if (rootRef.current?.querySelector(`mark[data-highlight-id="${h.id}"]`))
-        return
-
-      try {
-        const startNode = getNodeFromPath(
-          h.range.startContainerPath,
-          rootRef.current!,
-        )
-        const endNode = getNodeFromPath(
-          h.range.endContainerPath,
-          rootRef.current!,
-        )
-
-        if (startNode && endNode) {
-          const range = document.createRange()
-          range.setStart(startNode, h.range.startOffset)
-          range.setEnd(endNode, h.range.endOffset)
-
-          if (startNode.parentElement?.tagName !== 'MARK') {
-            wrapRangeWithHighlight(range, h.id, h.color)
-          }
+    // If rootRef is not ready yet, wait a bit for the DOM to settle
+    if (!rootRef.current) {
+      const timer = setTimeout(() => {
+        if (rootRef.current && savedHighlights.length > 0) {
+          applyHighlights()
         }
-      } catch (e) {}
-    })
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+
+    applyHighlights()
+
+    function applyHighlights() {
+      if (!rootRef.current) return
+
+      savedHighlights.forEach((h) => {
+        if (
+          rootRef.current?.querySelector(`mark[data-highlight-id="${h.id}"]`)
+        ) {
+          return
+        }
+
+        try {
+          const startNode = getNodeFromPath(
+            h.range.startContainerPath,
+            rootRef.current!,
+          )
+          const endNode = getNodeFromPath(
+            h.range.endContainerPath,
+            rootRef.current!,
+          )
+
+          if (startNode && endNode) {
+            const range = document.createRange()
+
+            try {
+              range.setStart(startNode, h.range.startOffset)
+              range.setEnd(endNode, h.range.endOffset)
+
+              if (startNode.parentElement?.tagName !== 'MARK') {
+                wrapRangeWithHighlight(range, h.id, h.color)
+              }
+            } catch (rangeError) {
+              console.warn(
+                'Failed to create range for highlight:',
+                h.id,
+                rangeError,
+              )
+            }
+          } else {
+            console.warn('Could not find nodes for highlight:', h.id, {
+              startPath: h.range.startContainerPath,
+              endPath: h.range.endContainerPath,
+              startNode,
+              endNode,
+            })
+          }
+        } catch (e) {
+          console.warn('Failed to render highlight:', h.id, e)
+        }
+      })
+    }
   }, [savedHighlights])
 
   return (
-    <div
-      ref={rootRef}
-      // Removed onMouseUp from here! It is now handled globally in useEffect.
-      onClick={handleContainerClick}
-      className="relative"
-    >
+    <div className="relative">
+      <div ref={rootRef} onClick={handleContainerClick}>
+        {children}
+      </div>
       {/* 1. Toolbar */}
       {toolbarPosition && (
         <div
@@ -337,8 +398,6 @@ export function TextHighlighter({
           </Button>
         </div>
       )}
-
-      {children}
     </div>
   )
 }

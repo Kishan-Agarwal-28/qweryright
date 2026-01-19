@@ -4,13 +4,13 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
-import eslintConfigPrettier from "eslint-config-prettier";
 import globals from "globals";
 
-// Helper to define __dirname in ESM modules
+// Replicate __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Initialize FlatCompat to translate legacy "extends"
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
@@ -19,63 +19,47 @@ const compat = new FlatCompat({
 export default [
   // 1. Global Ignores
   {
-    ignores: ["dist", "build", ".next", "node_modules", "*.config.js"],
+    ignores: ["dist", ".eslintrc.js"],
   },
 
-  // 2. Extended Configs
+  // 2. Extends (Legacy translation)
   ...compat.extends(
+    "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
   ),
 
   // 3. Main Configuration
   {
-    files: ["**/*.ts", "**/*.js"],
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     plugins: {
       "@typescript-eslint": tsPlugin,
     },
     languageOptions: {
       parser: tsParser,
-      parserOptions: {
-        project: "./tsconfig.json",
-        tsconfigRootDir: __dirname,
-        sourceType: "module",
-        ecmaVersion: 2022,
-      },
+      ecmaVersion: 2022,
+      sourceType: "module",
       globals: {
-        ...globals.node,
-        ...globals.es2021,
+        ...globals.node, // Replaces env: { node: true }
+        ...globals.es2021, // Replaces env: { es2022: true } approx
+      },
+      parserOptions: {
+        project: ["./tsconfig.json"],
+        tsconfigRootDir: __dirname,
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
     rules: {
-      // TypeScript rules
+      "no-console": "warn",
       "@typescript-eslint/no-unused-vars": [
         "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+        { argsIgnorePattern: "^_" },
       ],
-
-      // ✅ MODIFIED: Allow async functions in void contexts (Fixes Fastify handler error)
-      "@typescript-eslint/no-misused-promises": [
-        "error",
-        {
-          checksVoidReturn: false,
-        },
-      ],
-
-      "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/explicit-module-boundary-types": "off",
-
-      // Node / backend
-      "no-console": "off",
-      "no-process-exit": "off",
-
-      // Code quality
-      "prefer-const": "error",
-      "no-var": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/ban-types": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
     },
   },
-
-  // 4. Prettier Config
-  eslintConfigPrettier,
 ];

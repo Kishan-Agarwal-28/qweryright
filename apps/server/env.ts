@@ -13,6 +13,12 @@ export const env = createEnv({
     PORT: z.string().min(1),
     NODE_ENV: z.enum(["development", "production", "test"]),
     CLIENT_ORIGIN: z.string().url().optional(),
+    RESEND_API_KEY: z.string().startsWith("re_"),
+    QSTASH_URL: z.string(),
+    QSTASH_TOKEN: z.string(),
+    QSTASH_CURRENT_SIGNING_KEY: z.string(),
+    QSTASH_NEXT_SIGNING_KEY: z.string(),
+    BACKEND_URL: z.string().url(),
   },
 
   /**

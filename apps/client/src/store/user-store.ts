@@ -3,18 +3,9 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type { StateStorage } from 'zustand/middleware'
 import { decryptJSON, encryptJSON } from '@/lib/encrypt'
+import type { User } from '@/lib/auth-client'
 
-export interface IUser {
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  email: string
-  emailVerified: boolean
-  name: string
-  image?: string | null | undefined
-  username?: string | null | undefined
-  displayUsername?: string | null | undefined
-}
+export type IUser = User
 
 interface IStore {
   user: IUser | null

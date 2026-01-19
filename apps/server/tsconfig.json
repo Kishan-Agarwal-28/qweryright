@@ -14,7 +14,7 @@
     "moduleResolution": "NodeNext",
     // "types": [],
     // For nodejs:
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "types": ["node"],
     // and npm install -D @types/node
 
@@ -48,5 +48,5 @@
       "@/*": ["./*"]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]
 }

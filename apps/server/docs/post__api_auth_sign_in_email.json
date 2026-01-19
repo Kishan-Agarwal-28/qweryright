@@ -21,25 +21,21 @@
         "rememberMe": {
           "type": "boolean",
           "example": true
-        },
-        "callbackURL": {
-          "type": "string"
         }
       },
-      "required": ["email", "password", "rememberMe", "callbackURL"]
+      "required": ["email", "password", "rememberMe"]
     },
     "example": {
-      "email": "a@a.com",
+      "email": "testifywebdev@gmail.com",
       "password": "12345678A@a",
-      "rememberMe": true,
-      "callbackURL": "/dashboard"
+      "rememberMe": true
     },
-    "signature": "callbackURL:string|email:string|password:string|rememberMe:boolean"
+    "signature": "email:string|password:string|rememberMe:boolean"
   },
   "customHeaders": {
     "host": "localhost:4000",
     "connection": "keep-alive",
-    "content-length": "89",
+    "content-length": "78",
     "sec-ch-ua-platform": "\"Windows\"",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
     "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
@@ -53,7 +49,7 @@
     "referer": "http://localhost:3000/",
     "accept-encoding": "gzip, deflate, br, zstd",
     "accept-language": "en-US,en;q=0.9",
-    "cookie": "theme=dark"
+    "cookie": "better-auth.oauth_state=b710cc59bd959e968aedbb7b1cccce1586b74a412a6ab7f33c46df4c1d918f6ce7811ad13244b5ac4827645d3ca75be03df97a81ea3c7410a4ebd578d9d864572edd037e84de293333d6588d822a41d5ce490110f1079b07437e6d1b79c379c1bc03281d329369bb8f0d65fff2ae6ecc372c9692919bb0eb9227a2233f33987d6a781afcc032ee0a7fa6464d7da8d3fa111cf02820e9723b86b8f528daf60aab785f45ed71a7914e2b1a33a639b3fff8862303d29a9207de592f98c1fdc050b43688d91a637fedb24ef0a298e09678b12fadecb06cc5d9c361b4c1a9c8dc25361b5420d33663c8acc4f2d78a5bd12a7a08a65540d7d56323628a37d0abcaaae3181fdadb39fe62419925561503bc041b4c50b336dfcec53a0994325591214ff24d6af985ea2c"
   },
   "response": {
     "statusCode": 200,
@@ -62,10 +58,10 @@
       "access-control-allow-credentials": "true",
       "access-control-expose-headers": "set-auth-token",
       "content-type": "application/json; charset=utf-8",
-      "set-auth-token": "pu0ovZln3nWmRciwOndI799xjyaxrlNO.ZyeW7EJP%2Fzg8PeV1wY3BfkCLQlG2T7DUVILBooMG9lU%3D",
+      "set-auth-token": "jC7TezBRfMPSXNyYBWcZEDOvWNSvuAow.0MZaH6TYYrmHIU3GQphL%2BX0MGAtEO78K%2BIJXr%2BakoOE%3D",
       "set-cookie": [
-        "better-auth.session_token=pu0ovZln3nWmRciwOndI799xjyaxrlNO.ZyeW7EJP%2Fzg8PeV1wY3BfkCLQlG2T7DUVILBooMG9lU%3D; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax",
-        "better-auth.session_data=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoibTBjZHFuakd5RGViMlRqOVl0emNqLVZHcTZNcndhb2xQbklNcHYtVEppRSJ9..bdFghRT08Z3narcOMlHSIw.5b3lMcj5H542HG2ugoBWt9I3QVLfoAS4CjSjIRq2xM1UDkNvxFDCKNf1UpvAMxmuaLbTtO8Fka2oy_txeN3ML-TjvCD4Tlz1DXc2L5ZguRlkL1aFDiAcNpMV97K6tL0kOFHGBHIB7-pG7bOW2BvOlp8HoG7rbhNRqGTPR4RhQrVYhC5hRGRRoGo0bZIe9yxEJPZ7h1FG-DOZqZlcoV8Ch4-uPhYdiuqq3LYaFQWDnnSfqsAie-AbFarY3mrW7Wk1MWsb8W2D3Hmc_HE1lZ4qJDHzHoUw1qwvgM5-Z-aBXrk3EA7eOxUkLdNpdkC5FB_a2HCKBhfsaMKMK1-YotFQMHp7nSE1Rs5tEWbbjycImFur1Y_VLNqxk_RRFM2MjTG1WJU7ugUrbT5gIUhycsdxJYiof6CqJWrMhpF4xEXd8a817hYmHmkFjUxg2VomFQFrFyhaE1Mrp7C_Nu5F0psSxO-B-4_gHtRhAoMBGlU7NNoYQdHFKzAfOigCAZMuugG6pidC3foALAR2-2Ih0V39_1BUps8LRD4nwWSz68iQmxApxgoH4CsIxq3_qBeoVYKKclEs6hhCLiqlljtdy1vRUcHcctTw3pp-YLkQ8leD2uvsLCUWqIjR3nwqv2eu9v6DbZSGXp_CRHVCTbVnVwb2z0zm4fpvgLEeFeZGmGy3XNzzyR2-E9aPIFJjFj7f270aoq5rZK6_CVQgFqsCTeKHan-W3RIImVUh9xVFu6KEAVPiSNEChPS9_-NlrGwkMQOz5dFI5opFMMoHXwMs9evV03EOOP0R4pf2RlKHKD-qPfDA5H7bzt9UA0KQWQlP39b3c8L9sOitMOYytKDKkUQer5c143_ersQDRsBC1nvYr59vTIUuiemoxsAl25Kisev5IaK9lyS9P4JUwIIy3NrqL-5OcKAdCjvtOKemstazvU69XGGtwW3e83PJkcn0jFYXKgMjC0hIbRBQtk8vtNR0rbzbPIxmCdIFxxFtQR6lw3uOklYClV8AXaLKSeet8jkDs1UtQEa599_0pCsMVobE6TFvx-Fs-KjOzZOhY-oIJ45iOgJN5TCSQ4ycWmpGKbinGFRNRv1kLnftroMDTguNInFJ22v3LsBqtkk5yAl1kN0.AFDBEIjelnJnq9uo-8Zk3zdpIVwSyQTf9peuxjrlFBg; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax"
+        "better-auth.session_token=jC7TezBRfMPSXNyYBWcZEDOvWNSvuAow.0MZaH6TYYrmHIU3GQphL%2BX0MGAtEO78K%2BIJXr%2BakoOE%3D; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax",
+        "better-auth.session_data=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoibTBjZHFuakd5RGViMlRqOVl0emNqLVZHcTZNcndhb2xQbklNcHYtVEppRSJ9..rvWkatr4ZEgEjJ7OvspIQg.OheJqXCBLZQYvn9aNkaRJQ8XP4XczHXaadPxpDq9lXpeJNjC6dO4ERVQuErBRPcx-U7y9Q5voafZl5R6rO2NMycajhWbjbQAJkB-881ENhszLq7kjHnu0bxFqr_OBkKB-K9IFMiw_z4OpLFQxSfOFN_PHbIqYS9TjqtqXohcQnwd3MLOoDgp2svEZe2zZaajG9K6Iw0NmkWT9MHrzE8nNk9JM_i3IZOvSyAFRIm75MwnqMbi9Gzg1hnyJsqsb-G-PvgOmCX29PUpM9EqmezDD95jqU723hvokEdNO2TV8c6VGo7HUJkcr6BV0dbneJoHNrkisY9lX3JbLI2PXy5JJaEDGubzYZdu8aJeKGkKaj9CknCiduPS46kfXV2L86ux62UzAmq4-Ga8NBO1lmnJ0zmzphGrjgkRtsu8RxLHDYsn9h_jjoRKGXZDDJfrgCBw97d5iLRuYQmHHGMnkMoC5EgUUhjQRgrBOx22ZYmUspWEkSTZ_eaUr-oVMZgSBCFXmSuqi7CoOAmmfePb0FaH7uvYfA07IEebnejRyLWAJ-zSLdTNo_0StUhcxcWOv3Cu64YPz_xqtN9pctD0RpLhvwYvldzS3n9aD8hGIYXL_IxWWd6Wf0HhOKeONTE_avn5n90YEgwxf_aEOgPQGXs5UXypUtFQtRvB8zwOVrkupvH4UB80kt2LyRTf3cKNybMTwrpgOvet2LrmYJrm3p_Qs_Ua7XzTlo44DgEFXHJbm90g-6QTkQO1ZakYFMcLDco0APfSzgJ-LnscptbvNFaT8Yf0KXcEiwWZ7ia_54o_GvT2C4gz65ScD-efn4bt6FYJQvUwdLxvBtxVDEHCmAFOle96FlmJ0GcjugFGCb8ZRJCdgsGbqysvxCGTVymDPGZLlj1HKizqMZT9wxOLUdWFXSgR2DosHWOW7LNKkWzkwMLEJFI6eFXro5DqG-kt8zNbSBYA6pI3JpnekjRfiOidCuVLQ11QWd61Fg40AojjRMDY-nYvx6jYxuA6Q0glmO0gxYjp-l7F0aN5u10yyxlShM3oH1gng9hkSEKVgt0iApn7xP4R6YnrbhKC6d5E2PASB0rUNFlEN2ioSIPxkp7vOPnyiXoIoPm_yO5v8QBhhBVcMave22i0sc5ezwU6ADvnJOKCqiipb3ps6sE15E-ab-Csm0Fo1YlmDjKvqedRlCutH7yvbGzICt_5b24zv1o2maQvhC5I57NG31k6XeKi4esqxgfgDeQJVq2oJw8sQLwQrrQpiciQaeXPluwyhgnaw22IzuykOFPFLUGWtME2Zt-QQ7DgGJ7H2C07Vtk-7cw.lfm-j6A4HO89HcoJzhoepj9MPuC9_wOsde3A0MV_qJY; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax"
       ]
     },
     "body": {
@@ -75,12 +71,9 @@
         "properties": {
           "redirect": {
             "type": "boolean",
-            "example": true
+            "example": false
           },
           "token": {
-            "type": "string"
-          },
-          "url": {
             "type": "string"
           },
           "user": {
@@ -95,7 +88,7 @@
               },
               "emailVerified": {
                 "type": "boolean",
-                "example": false
+                "example": true
               },
               "image": {
                 "type": "string"
@@ -108,10 +101,32 @@
                 "type": "string",
                 "format": "date-time"
               },
+              "twoFactorEnabled": {
+                "type": "boolean",
+                "example": false
+              },
               "username": {
                 "type": "string"
               },
               "displayUsername": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "age": {
+                "type": "string",
+                "nullable": true
+              },
+              "gender": {
+                "type": "string",
+                "nullable": true
+              },
+              "location": {
+                "type": "string"
+              },
+              "institution": {
                 "type": "string"
               },
               "id": {
@@ -125,33 +140,41 @@
               "image",
               "createdAt",
               "updatedAt",
+              "twoFactorEnabled",
               "username",
               "displayUsername",
+              "location",
+              "institution",
               "id"
             ]
           }
         },
-        "required": ["redirect", "token", "url", "user"]
+        "required": ["redirect", "token", "user"]
       },
       "example": {
-        "redirect": true,
-        "token": "pu0ovZln3nWmRciwOndI799xjyaxrlNO",
-        "url": "/dashboard",
+        "redirect": false,
+        "token": "jC7TezBRfMPSXNyYBWcZEDOvWNSvuAow",
         "user": {
           "name": "test",
-          "email": "a@a.com",
-          "emailVerified": false,
-          "image": "https://ui-avatars.com/api/?name=test_123&background=random&color=fff",
-          "createdAt": "2025-12-28T13:51:52.384Z",
-          "updatedAt": "2025-12-28T13:51:52.384Z",
-          "username": "test_123",
-          "displayUsername": "test_123",
-          "id": "E5FpTyBXlJiQfzgbFL6UA6gzh8Q4YxDs"
+          "email": "testifywebdev@gmail.com",
+          "emailVerified": true,
+          "image": "https://ui-avatars.com/api/?name=testifywebdev&background=random&color=fff",
+          "createdAt": "2026-01-11T21:42:14.903Z",
+          "updatedAt": "2026-01-11T21:42:17.870Z",
+          "twoFactorEnabled": false,
+          "username": "testifywebdev",
+          "displayUsername": "testifywebdev",
+          "description": null,
+          "age": null,
+          "gender": null,
+          "location": "unknown",
+          "institution": "unknown",
+          "id": "3Y3YbWkqMzamQWaZu5iQTT8ffnse90Xj"
         }
       },
-      "signature": "redirect:boolean|token:string|url:string|user:object:createdAt:string|displayUsername:string|email:string|emailVerified:boolean|id:string|image:string|name:string|updatedAt:string|username:string"
+      "signature": "redirect:boolean|token:string|user:object:age:null|createdAt:string|description:null|displayUsername:string|email:string|emailVerified:boolean|gender:null|id:string|image:string|institution:string|location:string|name:string|twoFactorEnabled:boolean|updatedAt:string|username:string"
     }
   },
-  "timestamp": "2025-12-30T15:52:02.705Z",
-  "lastUpdated": "2025-12-30T15:52:02.705Z"
+  "timestamp": "2026-01-11T21:43:28.547Z",
+  "lastUpdated": "2026-01-11T21:43:28.547Z"
 }

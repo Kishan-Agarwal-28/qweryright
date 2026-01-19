@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { useParams } from '@tanstack/react-router'
+import { useBookmark } from '@/hooks/use-bookmark'
 
 // --- UI Icons (Lucide React) ---
 import {
@@ -83,6 +85,7 @@ interface PageSearchItem {
 
 interface BottomDockProps {
   containerId: string
+  initialIsBookmarked?: boolean
 }
 
 interface MetaData {
@@ -394,7 +397,7 @@ const ScrollProgressButton = ({
   const strokeDashoffset = circumference - (progress / 100) * circumference
 
   return (
-    <div className="relative h-10 w-10 flex items-center justify-center">
+    <div className="relative h-10 w-10 flex items-center justify-center cursor-pointer">
       <svg
         className="absolute inset-0 h-full w-full -rotate-90 transform"
         viewBox="0 0 40 40"
@@ -415,7 +418,7 @@ const ScrollProgressButton = ({
       <Button
         variant="ghost"
         size="icon"
-        className="rounded-full h-8 w-8 hover:bg-transparent z-10"
+        className="rounded-full h-8 w-8 hover:bg-transparent z-10 cursor-pointer"
         onClick={onClick}
       >
         <ArrowUp className="h-5 w-5" />
@@ -426,7 +429,19 @@ const ScrollProgressButton = ({
 
 // --- Main Component ---
 
-export default function BottomDock({ containerId }: BottomDockProps) {
+export default function BottomDock({
+  containerId,
+  initialIsBookmarked,
+}: BottomDockProps) {
+  const params = useParams({ strict: false })
+  const courseId = params.courseId as string
+
+  // Bookmark hook
+  const { isBookmarked, toggleBookmark, isLoading } = useBookmark(
+    courseId,
+    initialIsBookmarked,
+  )
+
   const [openPopover, setOpenPopover] = useState<string | null>(null)
   const [tocItems, setTocItems] = useState<Array<TocItem>>([])
   const [searchableItems, setSearchableItems] = useState<Array<PageSearchItem>>(
@@ -480,10 +495,13 @@ export default function BottomDock({ containerId }: BottomDockProps) {
             el.id = `content-search-${index}`
           }
           const isHeading = ['H1', 'H2', 'H3'].includes(el.tagName)
+          const itemType: PageSearchItem['type'] = isHeading
+            ? 'heading'
+            : 'text'
           return {
             id: el.id,
             text: el.textContent || '',
-            type: isHeading ? 'heading' : 'text',
+            type: itemType,
           }
         })
         .filter((item) => item.text.trim().length > 0)
@@ -571,7 +589,7 @@ export default function BottomDock({ containerId }: BottomDockProps) {
       </CommandDialog>
 
       <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
-        <div className="flex items-center gap-1 rounded-full border bg-background/80 backdrop-blur-md p-1.5 shadow-lg shadow-black/5 dark:bg-zinc-900/90 dark:border-zinc-800">
+        <div className="flex items-center gap-1 rounded-full border bg-background/80 backdrop-blur-md p-1.5 shadow-lg shadow-black/5  dark:border-zinc-800">
           <TooltipProvider delayDuration={100}>
             {/* TOC */}
             <Popover
@@ -636,11 +654,20 @@ export default function BottomDock({ containerId }: BottomDockProps) {
                   variant="ghost"
                   size="icon"
                   className="rounded-full h-10 w-10 hover:bg-muted"
+                  onClick={toggleBookmark}
+                  disabled={isLoading}
                 >
-                  <Bookmark className="h-5 w-5" />
+                  <Bookmark
+                    className={cn(
+                      'h-5 w-5',
+                      isBookmarked && 'fill-current text-primary',
+                    )}
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent sideOffset={10}>Bookmark</TooltipContent>
+              <TooltipContent sideOffset={10}>
+                {isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+              </TooltipContent>
             </Tooltip>
 
             <Separator orientation="vertical" className="h-6 mx-1 bg-border" />

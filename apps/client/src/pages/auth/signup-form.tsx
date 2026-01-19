@@ -5,7 +5,7 @@ import { RiGithubLine, RiGoogleLine } from 'react-icons/ri'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Image } from '@unpic/react'
-import { Link } from '@tanstack/react-router'
+import { HistoryState, Link, useNavigate } from '@tanstack/react-router'
 import { SignupSchema } from '@repo/schema'
 import type z from 'zod'
 import { authClient } from '@/lib/auth-client'
@@ -27,6 +27,8 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useUserStore } from '@/store/user-store'
+import { env } from '@/env'
 
 export function SignupForm({
   className,
@@ -35,6 +37,8 @@ export function SignupForm({
   const [isVisible, setIsVisible] = useState(false)
   const [isVisible2, setIsVisible2] = useState(false)
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const userStore = useUserStore()
   const toggleVisibility = (id: 1 | 2) => {
     if (id === 1) {
       setIsVisible(!isVisible)
@@ -54,7 +58,7 @@ export function SignupForm({
           username: value.username,
           name: value.name,
           image: `https://ui-avatars.com/api/?name=${encodeURIComponent(value.username)}&background=random&color=fff`,
-          callbackURL: '/dashboard',
+          callbackURL: '/auth/mailsent',
         },
         {
           onRequest: () => {
@@ -63,8 +67,17 @@ export function SignupForm({
           onError: () => {
             setLoading(false)
           },
-          onSuccess: () => {
+          onSuccess: (ctx) => {
             setLoading(false)
+            form.reset()
+            userStore.setUser(ctx.data.user)
+            navigate({
+              to: '/auth/mailsent',
+              state: {
+                fromApp: true,
+                email: value.email,
+              } as HistoryState,
+            })
           },
         },
       )
@@ -84,10 +97,10 @@ export function SignupForm({
     },
   })
   const handleSocialSignUp = async (provider: 'google' | 'github') => {
-    const { data, error } = await authClient.signIn.social(
+    const { error } = await authClient.signIn.social(
       {
         provider,
-        callbackURL: '/dashboard',
+        callbackURL: `${env.VITE_PUBLIC_URL}/auth/callback`,
       },
       {
         onRequest: () => {
