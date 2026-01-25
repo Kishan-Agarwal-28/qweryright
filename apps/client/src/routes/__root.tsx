@@ -60,10 +60,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html className={theme} lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
-        <script
+        {/* <script
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
-        />
+        /> */}
         <script src="https://unpkg.com/mingo@7.1.0/dist/mingo.min.js" />
       </head>
       <body>
