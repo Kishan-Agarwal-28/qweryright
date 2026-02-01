@@ -3,7 +3,7 @@
   "path": "/api/auth/user/email-cooldown",
   "originalPath": "/api/auth/user/email-cooldown",
   "query": {
-    "email": "testifywebdev@gmail.com"
+    "email": "hello123test@gmail.com"
   },
   "params": {},
   "customHeaders": {
@@ -45,6 +45,6 @@
       "signature": "nextRetryCount:number|remainingSeconds:number"
     }
   },
-  "timestamp": "2026-01-11T21:42:18.310Z",
-  "lastUpdated": "2026-01-11T21:42:18.311Z"
+  "timestamp": "2026-01-29T17:50:30.068Z",
+  "lastUpdated": "2026-01-29T17:50:30.068Z"
 }

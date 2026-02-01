@@ -1,28 +1,17 @@
 {
-  "method": "POST",
-  "path": "/api/auth/sign-out",
-  "originalPath": "/api/auth/sign-out",
+  "method": "GET",
+  "path": "/api/auth/list-accounts",
+  "originalPath": "/api/auth/list-accounts",
   "query": {},
   "params": {
-    "*": "sign-out"
-  },
-  "body": {
-    "type": "json",
-    "schema": {
-      "type": "object",
-      "properties": {}
-    },
-    "example": {},
-    "signature": ""
+    "*": "list-accounts"
   },
   "customHeaders": {
     "host": "localhost:4000",
     "connection": "keep-alive",
-    "content-length": "2",
     "sec-ch-ua-platform": "\"Windows\"",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
     "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
-    "content-type": "application/json",
     "sec-ch-ua-mobile": "?0",
     "accept": "*/*",
     "origin": "http://localhost:3000",
@@ -39,34 +28,67 @@
     "headers": {
       "access-control-allow-origin": "http://localhost:3000",
       "access-control-allow-credentials": "true",
-      "content-type": "application/json; charset=utf-8",
-      "set-cookie": [
-        "__Secure-better-auth.session_token=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.account_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.oauth_state=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.dont_remember=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax"
-      ]
+      "content-type": "application/json; charset=utf-8"
     },
     "body": {
       "type": "json",
       "schema": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
-          }
-        },
-        "required": ["success"]
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "providerId": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "accountId": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "providerId",
+            "createdAt",
+            "updatedAt",
+            "accountId",
+            "userId",
+            "scopes"
+          ]
+        }
       },
-      "example": {
-        "success": true
-      },
-      "signature": "success:boolean"
+      "example": [
+        {
+          "id": "ORvqwx9DrK8IuL0NR1ihvC6CQAAVEPU5",
+          "providerId": "credential",
+          "createdAt": "2026-01-29T17:50:29.471Z",
+          "updatedAt": "2026-01-29T17:50:29.471Z",
+          "accountId": "o2n7BqyDX5gbIQ2utSoHCnqkHLQ9YY7Y",
+          "userId": "o2n7BqyDX5gbIQ2utSoHCnqkHLQ9YY7Y",
+          "scopes": []
+        }
+      ],
+      "signature": "array:accountId:string|createdAt:string|id:string|providerId:string|scopes:array:empty|updatedAt:string|userId:string"
     }
   },
-  "timestamp": "2026-02-01T11:42:35.968Z",
-  "lastUpdated": "2026-02-01T11:42:35.968Z"
+  "timestamp": "2026-01-29T17:52:43.868Z",
+  "lastUpdated": "2026-01-29T17:52:43.868Z"
 }

@@ -189,15 +189,15 @@ export const auth = betterAuth({
       });
 
       // 3. Send Email via QStash
-      // await client.publishJSON<SendEmailProps>({
-      //   url: `${env.BACKEND_URL}/workflows/sendEmail`,
-      //   body: {
-      //     to: user.email,
-      //     reason: "verify",
-      //     url: `${env.CLIENT_ORIGIN}/auth/verify?token=${token}`,
-      //     username: user.name,
-      //   },
-      // });
+      await client.publishJSON<SendEmailProps>({
+        url: `${env.BACKEND_URL}/workflows/sendEmail`,
+        body: {
+          to: user.email,
+          reason: "verify",
+          url: `${env.CLIENT_ORIGIN}/auth/verify?token=${token}`,
+          username: user.name,
+        },
+      });
     },
   },
   rateLimit: {

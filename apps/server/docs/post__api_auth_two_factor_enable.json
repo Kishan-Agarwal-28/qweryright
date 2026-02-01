@@ -1,24 +1,31 @@
 {
   "method": "POST",
-  "path": "/api/auth/sign-out",
-  "originalPath": "/api/auth/sign-out",
+  "path": "/api/auth/two-factor/enable",
+  "originalPath": "/api/auth/two-factor/enable",
   "query": {},
   "params": {
-    "*": "sign-out"
+    "*": "two-factor/enable"
   },
   "body": {
     "type": "json",
     "schema": {
       "type": "object",
-      "properties": {}
+      "properties": {
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": ["password"]
     },
-    "example": {},
-    "signature": ""
+    "example": {
+      "password": "hello123@Aa"
+    },
+    "signature": "password:string"
   },
   "customHeaders": {
     "host": "localhost:4000",
     "connection": "keep-alive",
-    "content-length": "2",
+    "content-length": "26",
     "sec-ch-ua-platform": "\"Windows\"",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
     "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
@@ -39,34 +46,43 @@
     "headers": {
       "access-control-allow-origin": "http://localhost:3000",
       "access-control-allow-credentials": "true",
-      "content-type": "application/json; charset=utf-8",
-      "set-cookie": [
-        "__Secure-better-auth.session_token=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.account_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.oauth_state=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.dont_remember=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax"
-      ]
+      "content-type": "application/json; charset=utf-8"
     },
     "body": {
       "type": "json",
       "schema": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
+          "totpURI": {
+            "type": "string"
+          },
+          "backupCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
-        "required": ["success"]
+        "required": ["totpURI", "backupCodes"]
       },
       "example": {
-        "success": true
+        "totpURI": "otpauth://totp/QueryRight:hello123test%40gmail.com?secret=OYYF6STUJNREI23DO5GVAOKNKU3DG5TDJNGWIT2SKFIFQZKHNM2Q&issuer=QueryRight&digits=6&period=30",
+        "backupCodes": [
+          "xXFvE-S4DRK",
+          "2gAqq-o4550",
+          "D4Fo0-1X1sK",
+          "VGhtl-qHvCT",
+          "G0sos-HsMVC",
+          "0Srpj-DReM4",
+          "I0ax0-qo8LG",
+          "jCuID-QFn37",
+          "w35LZ-e4Ldn",
+          "hVFhI-2QLCE"
+        ]
       },
-      "signature": "success:boolean"
+      "signature": "backupCodes:array:primitive|totpURI:string"
     }
   },
-  "timestamp": "2026-02-01T11:42:35.968Z",
-  "lastUpdated": "2026-02-01T11:42:35.968Z"
+  "timestamp": "2026-01-29T19:32:11.633Z",
+  "lastUpdated": "2026-01-29T19:32:11.633Z"
 }

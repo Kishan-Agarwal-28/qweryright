@@ -19,6 +19,8 @@ export const env = createEnv({
     QSTASH_CURRENT_SIGNING_KEY: z.string(),
     QSTASH_NEXT_SIGNING_KEY: z.string(),
     BACKEND_URL: z.string().url(),
+    VERIFALIA_EMAIL: z.string().email(),
+    VERIFALIA_PASSWORD: z.string().min(1),
   },
 
   /**

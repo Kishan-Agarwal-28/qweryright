@@ -1,30 +1,19 @@
 {
-  "method": "POST",
-  "path": "/api/auth/sign-out",
-  "originalPath": "/api/auth/sign-out",
+  "method": "GET",
+  "path": "/api/content/highlights/aggregation-framework-architecture",
+  "originalPath": "/api/content/highlights/aggregation-framework-architecture",
   "query": {},
   "params": {
-    "*": "sign-out"
-  },
-  "body": {
-    "type": "json",
-    "schema": {
-      "type": "object",
-      "properties": {}
-    },
-    "example": {},
-    "signature": ""
+    "courseId": "aggregation-framework-architecture"
   },
   "customHeaders": {
     "host": "localhost:4000",
     "connection": "keep-alive",
-    "content-length": "2",
     "sec-ch-ua-platform": "\"Windows\"",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+    "accept": "application/json, text/plain, */*",
     "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
-    "content-type": "application/json",
     "sec-ch-ua-mobile": "?0",
-    "accept": "*/*",
     "origin": "http://localhost:3000",
     "sec-fetch-site": "same-site",
     "sec-fetch-mode": "cors",
@@ -39,34 +28,28 @@
     "headers": {
       "access-control-allow-origin": "http://localhost:3000",
       "access-control-allow-credentials": "true",
-      "content-type": "application/json; charset=utf-8",
-      "set-cookie": [
-        "__Secure-better-auth.session_token=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.account_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.oauth_state=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.dont_remember=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax"
-      ]
+      "content-type": "application/json; charset=utf-8"
     },
     "body": {
       "type": "json",
       "schema": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
+          "highlights": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
-        "required": ["success"]
+        "required": ["highlights"]
       },
       "example": {
-        "success": true
+        "highlights": []
       },
-      "signature": "success:boolean"
+      "signature": "highlights:array:empty"
     }
   },
-  "timestamp": "2026-02-01T11:42:35.968Z",
-  "lastUpdated": "2026-02-01T11:42:35.968Z"
+  "timestamp": "2026-01-29T18:44:13.730Z",
+  "lastUpdated": "2026-01-29T18:44:13.730Z"
 }

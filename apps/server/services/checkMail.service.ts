@@ -1,6 +1,7 @@
 import { VerifaliaRestClient, BearerAuthenticator } from "verifalia";
 import domains from "./tempmail.json" with { type: "json" };
 import z from "zod";
+import { env } from "@/env.js";
 
 const emailSchema = z.string().email();
 type Email = z.infer<typeof emailSchema>;
@@ -16,8 +17,8 @@ export const checkEmail = async (email: Email) => {
   const verifalia = new VerifaliaRestClient({
     username: "ignored",
     authenticator: new BearerAuthenticator(
-      "admin@letshost.dpdns.org",
-      "QijDEh1TazBsnaB",
+      env.VERIFALIA_EMAIL,
+      env.VERIFALIA_PASSWORD,
     ),
   });
 

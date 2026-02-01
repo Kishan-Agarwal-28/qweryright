@@ -1,10 +1,10 @@
 {
   "method": "OPTIONS",
-  "path": "/api/auth/sign-in/username",
-  "originalPath": "/api/auth/sign-in/username",
+  "path": "/api/content/highlights",
+  "originalPath": "/api/content/highlights",
   "query": {},
   "params": {
-    "*": "/api/auth/sign-in/username"
+    "*": "/api/content/highlights"
   },
   "customHeaders": {
     "host": "localhost:4000",
@@ -33,6 +33,6 @@
     },
     "body": {}
   },
-  "timestamp": "2026-01-29T17:52:31.248Z",
-  "lastUpdated": "2026-01-29T17:52:31.248Z"
+  "timestamp": "2026-01-29T18:53:00.456Z",
+  "lastUpdated": "2026-01-29T18:53:00.456Z"
 }

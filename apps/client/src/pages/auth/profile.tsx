@@ -68,38 +68,49 @@ import {
 } from '@/components/ui/popover'
 import { Passkey } from '@better-auth/passkey/client'
 import { Account, Session } from 'better-auth/client'
-import { User } from '@/lib/auth-client'
+import { authClient, User } from '@/lib/auth-client'
 import { UAParser } from 'ua-parser-js'
 import dayjs from 'dayjs'
-// --- MOCK DATA ---
-const locations = [
-  { value: 'london-uk', label: 'London, United Kingdom' },
-  { value: 'new-york-us', label: 'New York, USA' },
-  { value: 'tokyo-jp', label: 'Tokyo, Japan' },
-]
+import { useLocationSearch } from '@/hooks/useLocationSearch'
+import { useInstitutionSearch } from '@/hooks/useInstitutionSearch'
+import { Loader2 } from 'lucide-react'
+import { useDebounce } from 'use-debounce'
+import z from 'zod'
+import { useForm } from '@tanstack/react-form'
+import { Field, FieldError, FieldGroup } from '@/components/ui/field'
+import { toast } from 'sonner'
 
-const institutions = [
-  { value: 'harvard', label: 'Harvard University' },
-  { value: 'mit', label: 'Massachusetts Institute of Technology' },
-]
-
-// --- REUSABLE AUTOCOMPLETE COMPONENT ---
-interface SearchableSelectProps {
-  options: { value: string; label: string }[]
+// --- REUSABLE ASYNC AUTOCOMPLETE COMPONENT ---
+interface AsyncSearchableSelectProps {
   placeholder?: string
   value?: string
   onChange: (value: string) => void
   icon?: React.ReactNode
+  type: 'location' | 'institution'
 }
 
-function SearchableSelect({
-  options,
+function AsyncSearchableSelect({
   placeholder,
   value,
   onChange,
   icon,
-}: SearchableSelectProps) {
+  type,
+}: AsyncSearchableSelectProps) {
   const [open, setOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+
+  // Debounce search term to avoid overwhelming the API
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300)
+
+  // Use appropriate hook based on type
+  const locationSearch = useLocationSearch(debouncedSearchTerm)
+  const institutionSearch = useInstitutionSearch(debouncedSearchTerm)
+
+  const { options, isLoading } =
+    type === 'location' ? locationSearch : institutionSearch
+
+  const selectedLabel =
+    options.find((option) => option.value === value)?.label || value
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -112,9 +123,7 @@ function SearchableSelect({
         >
           <div className="flex items-center gap-2 truncate">
             {icon && <span className="text-muted-foreground">{icon}</span>}
-            {value
-              ? options.find((framework) => framework.value === value)?.label
-              : placeholder}
+            {value ? selectedLabel : placeholder}
           </div>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -123,38 +132,52 @@ function SearchableSelect({
         className="w-[--radix-popover-trigger-width] p-0"
         align="start"
       >
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder={`Search ${placeholder?.toLowerCase()}...`}
+            value={searchTerm}
+            onValueChange={setSearchTerm}
           />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.label}
-                  onSelect={(currentValue) => {
-                    const selectedOption = options.find(
-                      (o) =>
-                        o.label.toLowerCase() === currentValue.toLowerCase(),
-                    )
-                    onChange(
-                      selectedOption ? selectedOption.value : currentValue,
-                    )
-                    setOpen(false)
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      'mr-2 h-4 w-4',
-                      value === option.value ? 'opacity-100' : 'opacity-0',
-                    )}
-                  />
-                  {option.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            <CommandEmpty>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                </div>
+              ) : searchTerm.length < 2 ? (
+                'Type at least 2 characters to search'
+              ) : (
+                'No results found.'
+              )}
+            </CommandEmpty>
+            {isLoading && options.length === 0 ? null : (
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.label}
+                    onSelect={(currentValue) => {
+                      const selectedOption = options.find(
+                        (o) =>
+                          o.label.toLowerCase() === currentValue.toLowerCase(),
+                      )
+                      onChange(
+                        selectedOption ? selectedOption.value : currentValue,
+                      )
+                      setOpen(false)
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        'mr-2 h-4 w-4',
+                        value === option.value ? 'opacity-100' : 'opacity-0',
+                      )}
+                    />
+                    {option.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>
@@ -180,6 +203,49 @@ export default function ProfileSettingsPage({
   const [institution, setInstitution] = useState('')
   const otherSessions =
     sessions?.filter((s) => s.token !== currentSession?.token) || []
+
+  const TwoFAForm = useForm({
+    defaultValues: {
+      password: '',
+    },
+    validators: {
+      onSubmit: z.object({
+        password: z.string().min(1, 'Password is required'),
+      }),
+    },
+    onSubmit: async (values) => {
+      if (user?.twoFactorEnabled) {
+        await authClient.twoFactor.disable(
+          {
+            password: values.value.password,
+          },
+          {
+            onSuccess: () => {
+              toast.success('Two-factor authentication disabled')
+            },
+            onError: (error) => {
+              toast.error(error.error.message)
+            },
+          },
+        )
+      } else {
+        await authClient.twoFactor.enable(
+          {
+            password: values.value.password,
+          },
+          {
+            onSuccess: () => {
+              toast.success('Two-factor authentication enabled')
+            },
+            onError: (error) => {
+              toast.error(error.error.message)
+            },
+          },
+        )
+      }
+    },
+  })
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 font-sans pb-24">
       <div className="mx-auto max-w-7xl">
@@ -333,12 +399,12 @@ export default function ProfileSettingsPage({
                           placeholder="e.g. 24"
                           min={13}
                           max={100}
-                          defaultValue={user?.age}
+                          defaultValue={user?.age ?? ''}
                         />
                       </div>
                       <div className="space-y-2">
                         <Label>Gender</Label>
-                        <Select defaultValue={user?.gender}>
+                        <Select defaultValue={user?.gender ?? ''}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select gender" />
                           </SelectTrigger>
@@ -354,8 +420,8 @@ export default function ProfileSettingsPage({
                       </div>
                       <div className="col-span-1 md:col-span-2 space-y-2">
                         <Label>Location</Label>
-                        <SearchableSelect
-                          options={locations}
+                        <AsyncSearchableSelect
+                          type="location"
                           placeholder="Search city or country..."
                           value={location}
                           onChange={setLocation}
@@ -364,8 +430,8 @@ export default function ProfileSettingsPage({
                       </div>
                       <div className="col-span-1 md:col-span-2 space-y-2">
                         <Label>Institution</Label>
-                        <SearchableSelect
-                          options={institutions}
+                        <AsyncSearchableSelect
+                          type="institution"
                           placeholder="Search university or company..."
                           value={institution}
                           onChange={setInstitution}
@@ -699,12 +765,57 @@ export default function ProfileSettingsPage({
                           {!user?.twoFactorEnabled ? 'Enable' : 'Disable'} 2FA
                         </h4>
                       </div>
-                      <div className="grid gap-4 w-[60%] ">
-                        <Input type="password" placeholder="Password" />
-                      </div>
-                      <Button variant="outline" size="sm" className=" p-2 ">
-                        {!user?.twoFactorEnabled ? 'Enable' : 'Disable'} 2FA
-                      </Button>
+                      <form
+                        id="2fa-form"
+                        className="w-[80%] flex gap-4"
+                        onSubmit={(e) => {
+                          e.preventDefault()
+                          TwoFAForm.handleSubmit()
+                        }}
+                      >
+                        <FieldGroup>
+                          <TwoFAForm.Field
+                            name="password"
+                            children={(field) => {
+                              const isInvalid =
+                                field.state.meta.isTouched &&
+                                !field.state.meta.isValid
+                              return (
+                                <div className="grid gap-4 w-full ">
+                                  <Field data-invalid={isInvalid}>
+                                    <Input
+                                      id={field.name}
+                                      name={field.name}
+                                      value={field.state.value}
+                                      onBlur={field.handleBlur}
+                                      onChange={(e) =>
+                                        field.handleChange(e.target.value)
+                                      }
+                                      aria-invalid={isInvalid}
+                                      type="password"
+                                      placeholder="Password"
+                                    />
+                                    {isInvalid && (
+                                      <FieldError
+                                        errors={field.state.meta.errors}
+                                      />
+                                    )}
+                                  </Field>
+                                </div>
+                              )
+                            }}
+                          />
+                        </FieldGroup>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className=" p-2 "
+                          type="submit"
+                          form="2fa-form"
+                        >
+                          {!user?.twoFactorEnabled ? 'Enable' : 'Disable'} 2FA
+                        </Button>
+                      </form>
                     </div>
                   </CardContent>
                 </Card>

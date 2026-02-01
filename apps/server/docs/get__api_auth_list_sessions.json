@@ -1,28 +1,17 @@
 {
-  "method": "POST",
-  "path": "/api/auth/sign-out",
-  "originalPath": "/api/auth/sign-out",
+  "method": "GET",
+  "path": "/api/auth/list-sessions",
+  "originalPath": "/api/auth/list-sessions",
   "query": {},
   "params": {
-    "*": "sign-out"
-  },
-  "body": {
-    "type": "json",
-    "schema": {
-      "type": "object",
-      "properties": {}
-    },
-    "example": {},
-    "signature": ""
+    "*": "list-sessions"
   },
   "customHeaders": {
     "host": "localhost:4000",
     "connection": "keep-alive",
-    "content-length": "2",
     "sec-ch-ua-platform": "\"Windows\"",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
     "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
-    "content-type": "application/json",
     "sec-ch-ua-mobile": "?0",
     "accept": "*/*",
     "origin": "http://localhost:3000",
@@ -39,34 +28,70 @@
     "headers": {
       "access-control-allow-origin": "http://localhost:3000",
       "access-control-allow-credentials": "true",
-      "content-type": "application/json; charset=utf-8",
-      "set-cookie": [
-        "__Secure-better-auth.session_token=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.account_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.oauth_state=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.session_data=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax",
-        "__Secure-better-auth.dont_remember=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax"
-      ]
+      "content-type": "application/json; charset=utf-8"
     },
     "body": {
       "type": "json",
       "schema": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
-          }
-        },
-        "required": ["success"]
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "expiresAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "token": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "ipAddress": {
+              "type": "string"
+            },
+            "userAgent": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "expiresAt",
+            "token",
+            "createdAt",
+            "updatedAt",
+            "ipAddress",
+            "userAgent",
+            "userId",
+            "id"
+          ]
+        }
       },
-      "example": {
-        "success": true
-      },
-      "signature": "success:boolean"
+      "example": [
+        {
+          "expiresAt": "2026-02-05T17:52:43.496Z",
+          "token": "GJ1GGOxd7roLuukMUZA9qgVVEnSOM1aH",
+          "createdAt": "2026-01-29T17:52:43.496Z",
+          "updatedAt": "2026-01-29T17:52:43.496Z",
+          "ipAddress": "127.0.0.1",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+          "userId": "o2n7BqyDX5gbIQ2utSoHCnqkHLQ9YY7Y",
+          "id": "xAl4xxO5UMeQ5eKfJX78o1kUmo1ab9yu"
+        }
+      ],
+      "signature": "array:createdAt:string|expiresAt:string|id:string|ipAddress:string|token:string|updatedAt:string|userAgent:string|userId:string"
     }
   },
-  "timestamp": "2026-02-01T11:42:35.968Z",
-  "lastUpdated": "2026-02-01T11:42:35.968Z"
+  "timestamp": "2026-01-29T17:52:43.912Z",
+  "lastUpdated": "2026-01-29T17:52:43.912Z"
 }

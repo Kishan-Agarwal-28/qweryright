@@ -1,0 +1,78 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    # Set shared environment variables
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      KOYEB_API_TOKEN: ${{ secrets.KOYEB_API_TOKEN }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }} # Optional: If using Vercel Remote Cache
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }} # Optional: If using Vercel Remote Cache
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Required for Turbo to detect changes
+
+      - name: Setup pnpm
+        uses: actions/setup-pnpm@v3
+        with:
+          version: 10.x
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      # BENEFIT OF TURBOREPO: Cache the .turbo folder to speed up builds
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Build the entire monorepo using Turbo
+      # This will use the cache if sub-projects haven't changed
+      - name: Build Project
+        run: pnpm turbo build
+
+      # --- Frontend Deployment (Netlify) ---
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
+
+      - name: Deploy Frontend to Netlify
+        # Adjust --dir if your TanStack Start output is different (e.g., dist/client)
+        run: |
+          netlify deploy --prod --dir=.output --site=$NETLIFY_SITE_ID
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      # # --- Backend Deployment (Koyeb) ---
+      # # This triggers a redeploy on Koyeb.
+      # # Note: Koyeb pulls from Git by default. To use local artifacts, you'd typically use Docker.
+      # # This step assumes you have a Koyeb Service already set up linked to this repo.
+      # - name: Install Koyeb CLI
+      #   uses: koyeb/action-git-deploy@v1
+      #   with:
+      #     # Use the app name and service name you created in Koyeb
+      #     app-name: my-fastify-app
+      #     service-name: backend
+      #     # This tells Koyeb to pull the latest code from GitHub and build it
+      #     git-builder: buildpack

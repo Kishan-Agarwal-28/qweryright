@@ -19,17 +19,17 @@
       "required": ["email"]
     },
     "example": {
-      "email": "testifywebdev@gmail.com"
+      "email": "kishanagarwal028@gmail.com"
     },
     "signature": "email:string"
   },
   "customHeaders": {
     "host": "localhost:4000",
     "connection": "keep-alive",
-    "content-length": "35",
+    "content-length": "38",
     "sec-ch-ua-platform": "\"Windows\"",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
-    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+    "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
     "content-type": "application/json",
     "sec-ch-ua-mobile": "?0",
     "accept": "*/*",
@@ -40,7 +40,7 @@
     "referer": "http://localhost:3000/",
     "accept-encoding": "gzip, deflate, br, zstd",
     "accept-language": "en-US,en;q=0.9",
-    "cookie": "theme=light"
+    "cookie": "theme=dark"
   },
   "response": {
     "statusCode": 200,
@@ -67,6 +67,6 @@
       "signature": "status:boolean"
     }
   },
-  "timestamp": "2026-01-03T12:34:46.357Z",
-  "lastUpdated": "2026-01-03T12:34:46.357Z"
+  "timestamp": "2026-01-29T15:01:05.874Z",
+  "lastUpdated": "2026-01-29T15:01:05.874Z"
 }

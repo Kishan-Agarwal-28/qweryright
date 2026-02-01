@@ -1,10 +1,10 @@
 {
   "method": "OPTIONS",
-  "path": "/api/auth/sign-in/username",
-  "originalPath": "/api/auth/sign-in/username",
+  "path": "/api/auth/two-factor/enable",
+  "originalPath": "/api/auth/two-factor/enable",
   "query": {},
   "params": {
-    "*": "/api/auth/sign-in/username"
+    "*": "/api/auth/two-factor/enable"
   },
   "customHeaders": {
     "host": "localhost:4000",
@@ -33,6 +33,6 @@
     },
     "body": {}
   },
-  "timestamp": "2026-01-29T17:52:31.248Z",
-  "lastUpdated": "2026-01-29T17:52:31.248Z"
+  "timestamp": "2026-01-29T19:32:11.177Z",
+  "lastUpdated": "2026-01-29T19:32:11.177Z"
 }
